@@ -5,6 +5,11 @@
 package hotelreservationsystem;
 
 import View.LoginView;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.SwingUtilities;
 
 /**
@@ -22,13 +27,26 @@ public class HotelReservationSystem {
      */
     public static void main(String[] args) {
         // TODO code application logic here
-        SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                LoginView loginView = new LoginView();
-                loginView.setVisible(true);
-            }
-        });
-    }
-    
+        
+            try{
+                Class.forName("com.mysql.cj.jdbc.Driver");
+                Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/hotel_reservation","root","praveenkrishna2003");
+                System.out.println("Success");
+                SwingUtilities.invokeLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        LoginView loginView = new LoginView();
+                        loginView.setVisible(true);
+            
+                    }
+                });
+            }catch(ClassNotFoundException | SQLException ex){
+            Logger.getLogger(HotelReservationSystem.class.getName()).log(Level.SEVERE, null, ex);
+             }
+            
+            
+       
+        }
 }
+    
+
