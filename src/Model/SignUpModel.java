@@ -9,26 +9,26 @@ package Model;
  * @author gandh
  */
 public class SignUpModel {
-    private String userId;
+    private String userName;
     private String password;
     private String address;
     private String phoneNo;
 
     // Constructor
-    public SignUpModel(String userId, String password, String address, String phoneNo) {
-        this.userId = userId;
+    public SignUpModel(String userName, String password, String address, String phoneNo) {
+        this.userName = userName;
         this.password = password;
         this.address = address;
         this.phoneNo = phoneNo;
     }
 
     // Getters and setters for the fields
-    public String getUserId() {
-        return userId;
+    public String getUserName() {
+        return userName;
     }
 
-    public void setUserId(String userId) {
-        this.userId = userId;
+    public void setUserId(String userName) {
+        this.userName = userName;
     }
 
     public String getPassword() {

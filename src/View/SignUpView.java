@@ -126,7 +126,7 @@ public class SignUpView extends javax.swing.JFrame {
 
         jLabel7.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         jLabel7.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel7.setText("User ID");
+        jLabel7.setText("User Name");
         getContentPane().add(jLabel7);
         jLabel7.setBounds(630, 240, 140, 30);
 
@@ -151,21 +151,35 @@ public class SignUpView extends javax.swing.JFrame {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
-        String userId = jTextField2.getText();
-        String password = new String(jPasswordField1.getPassword());
-        String address = jTextField3.getText();
-        String phoneNo = jTextField4.getText();
+     // Retrieve user input
+    String userName = jTextField2.getText();
+    String password = new String(jPasswordField2.getPassword());
+    String confirmPassword = new String(jPasswordField1.getPassword());
+    String address = jTextField3.getText();
+    String phoneNo = jTextField4.getText();
 
+    // Perform data validation
+    if (userName.isEmpty() || !userName.matches("^[a-zA-Z]{1,25}$")) {
+        JOptionPane.showMessageDialog(this, "Invalid username. Please enter a valid name (up to 25 characters).");
+    } else if (!password.equals(confirmPassword)) {
+        JOptionPane.showMessageDialog(this, "Passwords do not match.");
+    } else if (address.isEmpty()) {
+        JOptionPane.showMessageDialog(this, "Please enter your address.");
+    } else if (!phoneNo.matches("^\\d{10}$")) {
+        JOptionPane.showMessageDialog(this, "Invalid phone number. Please enter a 10-digit number.");
+    } else {
         // Call the controller to register the user
-        boolean registrationSuccessful = controller.registerUser(userId, password, address, phoneNo);
-
-        if (registrationSuccessful) {
-            // Registration was successful; you can display a success message
-            JOptionPane.showMessageDialog(this, "Registration successful!");
+        int registrationSuccessful = controller.registerUser(userName, password, address, phoneNo);
+        if (registrationSuccessful!=-1) {
+            // Registration was successful; display a success message
+            JOptionPane.showMessageDialog(this, "Registration successful and Your User ID is "+registrationSuccessful);
         } else {
             // Registration failed; display an error message
             JOptionPane.showMessageDialog(this, "Registration failed. Please check your input.");
         }
+    }
+
+        
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jTextField2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField2ActionPerformed
