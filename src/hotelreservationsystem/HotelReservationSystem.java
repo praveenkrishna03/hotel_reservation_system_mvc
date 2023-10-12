@@ -5,6 +5,7 @@
 package hotelreservationsystem;
 
 import View.LoginView;
+import View.SignUpView;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -35,8 +36,8 @@ public class HotelReservationSystem {
                 SwingUtilities.invokeLater(new Runnable() {
                     @Override
                     public void run() {
-                        LoginView loginView = new LoginView();
-                        loginView.setVisible(true);
+                        SignUpView SignUpView = new SignUpView();
+                        SignUpView.setVisible(true);
             
                     }
                 });
