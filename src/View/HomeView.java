@@ -67,6 +67,7 @@ public class HomeView extends javax.swing.JFrame {
         jLabel13 = new javax.swing.JLabel();
         jLabel14 = new javax.swing.JLabel();
         jLabel15 = new javax.swing.JLabel();
+        jButton20 = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
         jButton7 = new javax.swing.JButton();
@@ -251,42 +252,55 @@ public class HomeView extends javax.swing.JFrame {
         jLabel8.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
         jLabel8.setText(customer_id);
         jPanel1.add(jLabel8);
-        jLabel8.setBounds(230, 30, 100, 40);
+        jLabel8.setBounds(230, 80, 100, 40);
 
         jLabel9.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
         jLabel9.setText("Customer ID    :");
         jPanel1.add(jLabel9);
-        jLabel9.setBounds(50, 30, 190, 40);
+        jLabel9.setBounds(50, 80, 190, 40);
 
         jLabel10.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
         jLabel10.setText("Name    :");
         jPanel1.add(jLabel10);
-        jLabel10.setBounds(370, 30, 100, 40);
+        jLabel10.setBounds(370, 80, 100, 40);
 
         jLabel11.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
         jLabel11.setText(name);
         jPanel1.add(jLabel11);
-        jLabel11.setBounds(480, 30, 100, 40);
+        jLabel11.setBounds(480, 80, 100, 40);
 
         jLabel12.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
         jLabel12.setText(phone_no);
         jPanel1.add(jLabel12);
-        jLabel12.setBounds(880, 30, 220, 40);
+        jLabel12.setBounds(880, 80, 220, 40);
 
         jLabel13.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
         jLabel13.setText("Phone Number    :");
         jPanel1.add(jLabel13);
-        jLabel13.setBounds(670, 30, 200, 40);
+        jLabel13.setBounds(670, 80, 200, 40);
 
         jLabel14.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
         jLabel14.setText(location);
         jPanel1.add(jLabel14);
-        jLabel14.setBounds(1260, 30, 260, 40);
+        jLabel14.setBounds(1260, 80, 260, 40);
 
         jLabel15.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
         jLabel15.setText("Location    :");
         jPanel1.add(jLabel15);
-        jLabel15.setBounds(1120, 30, 130, 40);
+        jLabel15.setBounds(1120, 80, 130, 40);
+
+        jButton20.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/logout.png"))); // NOI18N
+        jButton20.setText("Logout");
+        jButton20.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        jButton20.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
+        jButton20.setIconTextGap(0);
+        jButton20.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jButton20MouseClicked(evt);
+            }
+        });
+        jPanel1.add(jButton20);
+        jButton20.setBounds(1390, 20, 120, 50);
 
         getContentPane().add(jPanel1, "home");
 
@@ -950,6 +964,12 @@ public class HomeView extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_jButton16ActionPerformed
 
+    private void jButton20MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton20MouseClicked
+        // TODO add your handling code here:
+                        SignUpView SignUpView = new SignUpView();
+                        SignUpView.setVisible(true);
+    }//GEN-LAST:event_jButton20MouseClicked
+
     /**
      * @param args the command line arguments
      */
@@ -968,6 +988,7 @@ public class HomeView extends javax.swing.JFrame {
     private javax.swing.JButton jButton18;
     private javax.swing.JButton jButton19;
     private javax.swing.JButton jButton2;
+    private javax.swing.JButton jButton20;
     private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;
     private javax.swing.JButton jButton5;
