@@ -228,10 +228,10 @@ public class SignUpView extends javax.swing.JFrame {
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
      // Retrieve user input
-    String userName = jTextField2.getText();
+    String userName = jTextField3.getText();
     String password = new String(jPasswordField2.getPassword());
     String confirmPassword = new String(jPasswordField1.getPassword());
-    String address = jTextField3.getText();
+    String address = jTextField2.getText();
     String phoneNo = jTextField4.getText();
 
     // Perform data validation
