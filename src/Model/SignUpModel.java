@@ -21,7 +21,7 @@ public class SignUpModel {
         this.address = address;
         this.phoneNo = phoneNo;
     }
-
+    
     // Getters and setters for the fields
     public String getUserName() {
         return userName;

@@ -74,7 +74,7 @@ public class UserController {
         
         
     }
-
+    
     // Method for data validation (you can implement your validation logic here)
  
 
