@@ -235,7 +235,7 @@ public class SignUpView extends javax.swing.JFrame {
     String phoneNo = jTextField4.getText();
 
     // Perform data validation
-    if (userName.isEmpty() || !userName.matches("^[a-zA-Z]{1,25}$")) {
+    if (userName.isEmpty() ) {
         JOptionPane.showMessageDialog(this, "Invalid username. Please enter a valid name (up to 25 characters).");
     } else if (!password.equals(confirmPassword)) {
         JOptionPane.showMessageDialog(this, "Passwords do not match.");
@@ -292,9 +292,24 @@ public class SignUpView extends javax.swing.JFrame {
 
     private void jButton2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton2MouseClicked
         // TODO add your handling code here:
-        this.dispose();
+        
+        int userID = Integer.parseInt(jTextField6.getText());
+        String password = new String(jPasswordField3.getPassword());
+        String[] credentialsCheckSuccessful = controller.checkCredentials(userID, password);
+        if (credentialsCheckSuccessful!=null) {
+            // Registration was successful; display a success message
+            JOptionPane.showMessageDialog(this, "Credentials Check Success ");
+            this.dispose();
         HomeView homeView = new HomeView();
         homeView.setVisible(true);
+        } else {
+            // Registration failed; display an error message
+            JOptionPane.showMessageDialog(this, "Wrong Username or Password");
+        }
+        
+        
+        
+        
     }//GEN-LAST:event_jButton2MouseClicked
 
     /**

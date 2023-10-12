@@ -149,9 +149,10 @@ public class HomeView extends javax.swing.JFrame {
         jScrollPane2.setBounds(40, 300, 1470, 402);
 
         jLabel1.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
+        jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel1.setText("Previous Bookings by You");
         jPanel1.add(jLabel1);
-        jLabel1.setBounds(630, 250, 300, 30);
+        jLabel1.setBounds(630, 250, 300, 40);
 
         getContentPane().add(jPanel1, "home");
 

@@ -75,6 +75,48 @@ public class UserController {
         
     }
     
+    public String[] checkCredentials(int userId,String password) {
+        String[] userDetails=null;
+        try {
+    Class.forName("com.mysql.cj.jdbc.Driver");
+    Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/hotel_reservation", "root", "praveenkrishna2003");
+    System.out.println("Connection success");
+    
+    // Assuming you have a table named "hotel_customers"
+    String selectSQL = "SELECT * FROM hotel_customers WHERE customer_id = ? AND password = ?";
+    PreparedStatement preparedStatement = con.prepareStatement(selectSQL);
+    
+    preparedStatement.setInt(1, userId); // Replace "1" with the parameter index as per your table structure
+    preparedStatement.setString(2, password); // Replace "2" with the parameter index as per your table structure
+
+    ResultSet result = preparedStatement.executeQuery();
+
+    if (result.next()) {
+        // User with provided credentials found
+        //int userId = result.getInt("customer_id");
+        String phoneNo = result.getString("phone_no");
+        String location = result.getString("location");
+        String name = result.getString("Name");
+
+        userDetails = new String[]{ phoneNo, location, name };
+        // Now, userDetails array contains the retrieved user details
+        System.out.println("User details retrieved successfully.");
+
+        // Close result set, statement, and connection
+        result.close();
+        preparedStatement.close();
+        con.close();
+        
+        // You can return the userDetails array here or process it as needed
+    } else {
+        System.out.println("User not found or incorrect credentials.");
+    }
+} catch (ClassNotFoundException | SQLException ex) {
+    Logger.getLogger(UserController.class.getName()).log(Level.SEVERE, null, ex);
+}
+
+        return userDetails;
+    };
     // Method for data validation (you can implement your validation logic here)
  
 
