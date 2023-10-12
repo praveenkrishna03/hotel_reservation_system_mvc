@@ -4,7 +4,6 @@
  */
 package hotelreservationsystem;
 
-import View.LoginView;
 import View.SignUpView;
 import java.sql.Connection;
 import java.sql.DriverManager;
