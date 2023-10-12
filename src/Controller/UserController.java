@@ -5,7 +5,6 @@
 package Controller;
 
 import Model.SignUpModel;
-import com.sun.jdi.connect.spi.Connection;
 import java.sql.*;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
