@@ -112,7 +112,7 @@ public class SignUpView extends javax.swing.JFrame {
 
         jLabel13.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         jLabel13.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel13.setText("User Name");
+        jLabel13.setText("User ID");
         jPanel2.add(jLabel13);
         jLabel13.setBounds(630, 390, 140, 30);
 
@@ -292,21 +292,37 @@ public class SignUpView extends javax.swing.JFrame {
 
     private void jButton2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton2MouseClicked
         // TODO add your handling code here:
-        
-        int userID = Integer.parseInt(jTextField6.getText());
-        String password = new String(jPasswordField3.getPassword());
-        String[] credentialsCheckSuccessful = controller.checkCredentials(userID, password);
-        if (credentialsCheckSuccessful!=null) {
-            // Registration was successful; display a success message
-            JOptionPane.showMessageDialog(this, "Credentials Check Success ");
-            this.dispose();
-        HomeView homeView = new HomeView();
-        homeView.setVisible(true);
-        } else {
-            // Registration failed; display an error message
-            JOptionPane.showMessageDialog(this, "Wrong Username or Password");
+        if(jTextField6.getText().contains("admin")){
+            String userID = new String(jTextField6.getText());
+            String password = new String(jPasswordField3.getPassword());
+            String[] credentialsCheckSuccessful = controller.checkAdminCredentials(userID, password);
+            if (credentialsCheckSuccessful!=null) {
+                // Registration was successful; display a success message
+                JOptionPane.showMessageDialog(this, "Admin !!! ");
+                this.dispose();
+            AdminView adminView = new AdminView(credentialsCheckSuccessful);
+            adminView.setVisible(true);
+            } else {
+                // Registration failed; display an error message
+                JOptionPane.showMessageDialog(this, "Wrong Username or Password");
+            }
+        }else{
+            int userID = Integer.parseInt(jTextField6.getText());
+            String password = new String(jPasswordField3.getPassword());
+            String[] credentialsCheckSuccessful = controller.checkUserCredentials(userID, password);
+            if (credentialsCheckSuccessful!=null) {
+                // Registration was successful; display a success message
+                //JOptionPane.showMessageDialog(this, "Credentials Check Success ");
+                
+                HomeView homeView = new HomeView(credentialsCheckSuccessful);
+                homeView.setVisible(true);
+                this.dispose();
+            } else {
+                // Registration failed; display an error message
+                JOptionPane.showMessageDialog(this, "Wrong Username or Password");
+            }
+
         }
-        
         
         
         
