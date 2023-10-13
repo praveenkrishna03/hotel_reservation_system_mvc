@@ -11,11 +11,19 @@ import Controller.*;
 import java.awt.CardLayout;
 import Model.SignUpModel;
 import static java.awt.Frame.MAXIMIZED_BOTH;
+import java.awt.event.MouseEvent;
 import java.sql.Connection;
 import javax.swing.table.DefaultTableModel;
 import java.sql.*;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.time.LocalDate;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JOptionPane;
+
 
 /**
  *
@@ -464,6 +472,16 @@ public class HomeView extends javax.swing.JFrame {
         jButton13.setText("Book");
         jPanel2.add(jButton13);
         jButton13.setBounds(740, 550, 100, 30);
+        jButton13.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jButton13MouseClicked(evt);
+            }
+
+            
+        });
+        
+        
+        
 
         jComboBox2.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         jComboBox2.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "1 seater", "2 seater", "3 seater", "4 seater", "5 seater" }));
@@ -797,6 +815,13 @@ public class HomeView extends javax.swing.JFrame {
         jButton14.setText("Book");
         jPanel5.add(jButton14);
         jButton14.setBounds(740, 680, 100, 30);
+        jButton14.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jButton14MouseClicked(evt);
+            }
+
+            
+        });
 
         getContentPane().add(jPanel5, "Book Food");
 
@@ -1052,7 +1077,89 @@ public class HomeView extends javax.swing.JFrame {
 
     private void jButton12ActionPerformed(java.awt.event.ActionEvent evt) {                                          
         // TODO add your handling code here:
-    }                                         
+    }     
+    
+    private void jButton13MouseClicked(java.awt.event.MouseEvent evt) {                                      
+        // TODO add your handling code here:
+        String start_s=(String) jComboBox4.getSelectedItem();
+        String end_s=(String) jComboBox7.getSelectedItem();
+        
+        
+        int room_type = jComboBox2.getSelectedIndex()+1;
+        int start_day = jComboBox1.getSelectedIndex()+1;
+        int start_month = jComboBox3.getSelectedIndex()+1;
+        int start_year = Integer.parseInt(start_s);
+        int end_day = jComboBox5.getSelectedIndex()+1;
+        int end_month = jComboBox6.getSelectedIndex()+1;
+        int end_year = Integer.parseInt(end_s);
+        int cust_id=Integer.parseInt(customer_id);
+
+        Calendar calendar_start = Calendar.getInstance();
+        calendar_start.set(Calendar.YEAR, start_year);
+        calendar_start.set(Calendar.MONTH, start_month - 1); // Adjust for the 0-based month
+        calendar_start.set(Calendar.DAY_OF_MONTH, start_day);
+        Date start = calendar_start.getTime();
+
+        Calendar calendar_end = Calendar.getInstance();
+        calendar_end.set(Calendar.YEAR, end_year);
+        calendar_end.set(Calendar.MONTH, end_month - 1); // Adjust for the 0-based month
+        calendar_end.set(Calendar.DAY_OF_MONTH, end_day);
+        Date end = calendar_end.getTime();
+        
+        java.sql.Date start_date = new java.sql.Date(start.getTime());
+        java.sql.Date end_date = new java.sql.Date(end.getTime());
+        
+        ResultSet result = bookingController.BookRooms(cust_id, room_type, start_date, end_date);
+        if(result!=null){
+            try {
+                while (result.next()) {
+
+                    int BillNo = result.getInt("bill_id");
+                    int roomNo = result.getInt("room_no");
+                    String roomType = result.getString("room_type");
+                    Date startDate = result.getDate("start_date");
+                    Date endDate = result.getDate("end_date");
+                    String totalAmount = result.getString("Total_amount");
+                    JOptionPane.showMessageDialog(null, "Room No : "+roomNo+"\nRoom Type : "+roomType+"\nStart Date : "+startDate+"\nEnd Date : "+endDate+"\nAmount : "+totalAmount, "Room Booked", JOptionPane.INFORMATION_MESSAGE);
+
+
+                }
+            } catch (SQLException ex) {
+                Logger.getLogger(HomeView.class.getName()).log(Level.SEVERE, null, ex);
+                
+            }
+        
+        }else{
+            JOptionPane.showMessageDialog(null, "Room not available", "Room Not Booked", JOptionPane.INFORMATION_MESSAGE);
+        }
+        
+        
+        
+        
+    }
+    
+    
+    private void jButton14MouseClicked(java.awt.event.MouseEvent evt) {
+        String days=(String) jComboBox8.getSelectedItem();
+        boolean breakfast=jCheckBox1.isSelected();
+        boolean lunch=jCheckBox2.isSelected();
+        boolean snacks=jCheckBox3.isSelected();
+        boolean dinner=jCheckBox4.isSelected();
+        int cust_id=Integer.parseInt(customer_id);
+        int no_of_days = Integer.parseInt(days);
+        
+        
+        boolean done=bookingController.BookFoods(cust_id, no_of_days, breakfast, lunch, snacks, dinner);
+        
+        if(done){
+            JOptionPane.showMessageDialog(null, "Food Booking successful", "Booked", JOptionPane.INFORMATION_MESSAGE);
+
+        }
+        else{
+        }
+        
+    
+    }
 
     private void jCheckBox1ActionPerformed(java.awt.event.ActionEvent evt) {                                           
         // TODO add your handling code here:
