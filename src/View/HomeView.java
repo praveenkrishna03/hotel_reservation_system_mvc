@@ -414,7 +414,7 @@ public class HomeView extends javax.swing.JFrame {
             }
         });
         jPanel1.add(jButton20);
-        jButton20.setBounds(1390, 20, 120, 50);
+        jButton20.setBounds(1350, 20, 150, 50);
 
         getContentPane().add(jPanel1, "home");
 
@@ -939,7 +939,7 @@ public class HomeView extends javax.swing.JFrame {
         jScrollPane3.setBounds(52, 100, 1430, 580);
 
         jButton19.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
-        jButton19.setText("Send Request");
+        jButton19.setText("Generate Bill");
         jPanel7.add(jButton19);
         jButton19.setBounds(740, 700, 160, 30);
 
