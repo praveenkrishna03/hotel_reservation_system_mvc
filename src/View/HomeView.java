@@ -6,6 +6,7 @@ package View;
 
 
 import View.*;
+import java.lang.*;
 import Controller.*;
 import java.awt.CardLayout;
 import Model.SignUpModel;
@@ -50,44 +51,97 @@ public class HomeView extends javax.swing.JFrame {
         
         initComponents();
         bookingController = new BookingController();
-        initializeTable();
+        initializeTables();
     }
-         public DefaultTableModel model;
-    private void initializeTable() {
-        DefaultTableModel model = new DefaultTableModel();
+//         public DefaultTableModel previousBookingsModel;
+  //       public DefaultTableModel unpaidBookingsModel;
+    private void initializeTables() {
+        DefaultTableModel previousBookingsModel = new DefaultTableModel();
+        DefaultTableModel unpaidBookingsModel = new DefaultTableModel(){
+            Class[] types = new Class [] {
+                java.lang.Object.class,java.lang.Object.class, java.lang.Boolean.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class
+            };
+            
+           boolean[] canEdit = new boolean [] {
+                false, false, true, false, false, false, false
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+            
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        };
 
 // Define the table structure
-        model.addColumn("S.No");
-        model.addColumn("Room No");
-        model.addColumn("Room Type");
-        model.addColumn("Start Date");
-        model.addColumn("End Date");
-        model.addColumn("Amount");
+        previousBookingsModel.addColumn("Bill No");
+        previousBookingsModel.addColumn("Room No");
+        previousBookingsModel.addColumn("Room Type");
+        previousBookingsModel.addColumn("Start Date");
+        previousBookingsModel.addColumn("End Date");
+        previousBookingsModel.addColumn("Amount");
 
-       ResultSet result = bookingController.getPreviousBookings(Integer.parseInt(customer_id));
+       ResultSet previousBookingsModelResult = bookingController.getPreviousBookings(Integer.parseInt(customer_id));
+       ResultSet unpaidBookingsModelResult = bookingController.getUnpaidBookings(Integer.parseInt(customer_id));
            
        try{
-            while (result.next()) {
-                int sNo = result.getInt("S.No");
-                int roomNo = result.getInt("room_no");
-                String roomType = result.getString("room_type");
-                Date startDate = result.getDate("start_date");
-                Date endDate = result.getDate("end_date");
-                String totalAmount = result.getString("Total_amount");
+            while (previousBookingsModelResult.next()) {
+                int BillNo = previousBookingsModelResult.getInt("bill_id");
+                int roomNo = previousBookingsModelResult.getInt("room_no");
+                String roomType = previousBookingsModelResult.getString("room_type");
+                Date startDate = previousBookingsModelResult.getDate("start_date");
+                Date endDate = previousBookingsModelResult.getDate("end_date");
+                String totalAmount = previousBookingsModelResult.getString("Total_amount");
 
                 // Add a row to the table model
-                model.addRow(new Object[]{sNo, roomNo, roomType, startDate, endDate, totalAmount});
+                previousBookingsModel.addRow(new Object[]{BillNo, roomNo, roomType, startDate, endDate, totalAmount});
             }
 
             // Close result set and prepared statement
-            result.close();
+            previousBookingsModelResult.close();
+       }catch(SQLException ex) {
+            //model.addRow(new Object[]{null, null, "No data", null, null, null});
+            // Handle exceptions
+            ex.printStackTrace();
+        }
+        
+       
+       
+        unpaidBookingsModel.addColumn("Bill No");
+        unpaidBookingsModel.addColumn("Room No");
+        unpaidBookingsModel.addColumn("Generate Bill");
+        unpaidBookingsModel.addColumn("Room Type");
+        unpaidBookingsModel.addColumn("Start Date");
+        unpaidBookingsModel.addColumn("End Date");
+        unpaidBookingsModel.addColumn("Amount");
+       
+
+        try{
+            while (unpaidBookingsModelResult.next()) {
+                int BillNo = unpaidBookingsModelResult.getInt("bill_id");
+                int roomNo = unpaidBookingsModelResult.getInt("room_no");
+               
+                String roomType = unpaidBookingsModelResult.getString("room_type");
+                Date startDate = unpaidBookingsModelResult.getDate("start_date");
+                Date endDate = unpaidBookingsModelResult.getDate("end_date");
+                String totalAmount = unpaidBookingsModelResult.getString("Total_amount");
+
+                // Add a row to the table model
+                unpaidBookingsModel.addRow(new Object[]{BillNo ,roomNo,false, roomType, startDate, endDate, totalAmount});
+            }
+
+            // Close result set and prepared statement
+            unpaidBookingsModelResult.close();
        }catch(SQLException ex) {
             //model.addRow(new Object[]{null, null, "No data", null, null, null});
             // Handle exceptions
             ex.printStackTrace();
         }
 
-        jTable2.setModel(model); // Set the model for jTable2
+        jTable2.setModel(previousBookingsModel); // Set the model for jTable2
+        jTable3.setModel(unpaidBookingsModel); // Set the model for jTable2
     }
     
       
@@ -851,7 +905,7 @@ public class HomeView extends javax.swing.JFrame {
         jPanel7.add(jLabel30);
         jLabel30.setBounds(600, 10, 410, 80);
 
-        jTable3.setModel(new javax.swing.table.DefaultTableModel(
+        /*jTable3.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null, null, null, null},
                 {null, null, null, null, null, null, null},
@@ -877,7 +931,7 @@ public class HomeView extends javax.swing.JFrame {
             public boolean isCellEditable(int rowIndex, int columnIndex) {
                 return canEdit [columnIndex];
             }
-        });
+        });*/
         jTable3.setRowHeight(60);
         jScrollPane3.setViewportView(jTable3);
 

@@ -17,7 +17,26 @@ public class BookingController {
         ResultSet result=null;
         try {
             Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/hotel_reservation","root","praveenkrishna2003");
-            String query = "SELECT * FROM bookings WHERE user = "+customer_id;
+            String query = "SELECT * FROM bookings WHERE user = "+customer_id+" AND paid = 1";
+            PreparedStatement preparedStatement = con.prepareStatement(query);
+            result = preparedStatement.executeQuery();
+            
+            //preparedStatement.close();
+        }catch(SQLException ex) {
+            //model.addRow(new Object[]{null, null, "No data", null, null, null});
+            // Handle exceptions
+            ex.printStackTrace();
+        }
+        
+        return result;
+    }
+    
+    public ResultSet getUnpaidBookings(int customer_id){
+        
+        ResultSet result=null;
+        try {
+            Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/hotel_reservation","root","praveenkrishna2003");
+            String query = "SELECT * FROM bookings WHERE user = "+customer_id+" AND paid = 0";
             PreparedStatement preparedStatement = con.prepareStatement(query);
             result = preparedStatement.executeQuery();
             
