@@ -6,6 +6,7 @@ package View;
 
 
 import View.*;
+import Controller.*;
 import java.awt.CardLayout;
 import Model.SignUpModel;
 import static java.awt.Frame.MAXIMIZED_BOTH;
@@ -22,6 +23,7 @@ import java.sql.SQLException;
 public class HomeView extends javax.swing.JFrame {
     
     private SignUpModel signUpModel;
+    private BookingController bookingController;
     
             public String name;
             public String phone_no;
@@ -45,13 +47,16 @@ public class HomeView extends javax.swing.JFrame {
         customer_id=credentials[0];
         signUpModel = new SignUpModel(name, location, phone_no, customer_id);
         //initializeTable();
+        
         initComponents();
-        //initializeTable();
+        bookingController = new BookingController();
+        initializeTable();
     }
          public DefaultTableModel model;
     private void initializeTable() {
-        model = new DefaultTableModel();
-        // Define the table structure
+        DefaultTableModel model = new DefaultTableModel();
+
+// Define the table structure
         model.addColumn("S.No");
         model.addColumn("Room No");
         model.addColumn("Room Type");
@@ -59,12 +64,9 @@ public class HomeView extends javax.swing.JFrame {
         model.addColumn("End Date");
         model.addColumn("Amount");
 
-        try {
-            Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/hotel_reservation","root","praveenkrishna2003");
-            String query = "SELECT * FROM bookings WHERE user ="+customer_id+"";
-            PreparedStatement preparedStatement = con.prepareStatement(query);
-            ResultSet result = preparedStatement.executeQuery();
-
+       ResultSet result = bookingController.getPreviousBookings(Integer.parseInt(customer_id));
+           
+       try{
             while (result.next()) {
                 int sNo = result.getInt("S.No");
                 int roomNo = result.getInt("room_no");
@@ -79,8 +81,8 @@ public class HomeView extends javax.swing.JFrame {
 
             // Close result set and prepared statement
             result.close();
-            preparedStatement.close();
-        } catch (SQLException ex) {
+       }catch(SQLException ex) {
+            //model.addRow(new Object[]{null, null, "No data", null, null, null});
             // Handle exceptions
             ex.printStackTrace();
         }
@@ -259,8 +261,11 @@ public class HomeView extends javax.swing.JFrame {
         });
         jPanel1.add(jButton6);
         jButton6.setBounds(1070, 170, 180, 70);
+        
+        
+          
 
-        jTable2.setModel(new javax.swing.table.DefaultTableModel(
+        /*jTable2.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null, null, null},
                 {null, null, null, null, null, null},
@@ -287,7 +292,9 @@ public class HomeView extends javax.swing.JFrame {
             public boolean isCellEditable(int rowIndex, int columnIndex) {
                 return canEdit [columnIndex];
             }
-        });
+        });*/
+        
+        //jTable2.setModel(model);
         jTable2.setRowHeight(40);
         jTable2.setUpdateSelectionOnSort(false);
         jTable2.setVerifyInputWhenFocusTarget(false);
