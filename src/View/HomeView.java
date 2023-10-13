@@ -7,6 +7,11 @@ package View;
 
 import java.awt.CardLayout;
 import Model.SignUpModel;
+import java.sql.Connection;
+import javax.swing.table.DefaultTableModel;
+import java.sql.*;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 
 /**
  *
@@ -38,7 +43,14 @@ public class HomeView extends javax.swing.JFrame {
         customer_id=credentials[0];
         signUpModel = new SignUpModel(name, location, phone_no, customer_id);
         initComponents();
+        //initializeTable();
     }
+    
+    
+      
+
+//jTable2.setModel(model); // Set the model for jTable2
+
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -966,8 +978,10 @@ public class HomeView extends javax.swing.JFrame {
 
     private void jButton20MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton20MouseClicked
         // TODO add your handling code here:
+                        
                         SignUpView SignUpView = new SignUpView();
                         SignUpView.setVisible(true);
+                        this.dispose();
     }//GEN-LAST:event_jButton20MouseClicked
 
     /**
