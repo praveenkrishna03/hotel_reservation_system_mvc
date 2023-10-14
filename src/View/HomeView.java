@@ -32,8 +32,9 @@ import javax.swing.JOptionPane;
 public class HomeView extends javax.swing.JFrame {
     
     private SignUpModel signUpModel;
+
     private BookingController bookingController;
-    
+            public String[] credentials_for_refresh;
             public String name;
             public String phone_no;
             public String location;
@@ -56,11 +57,13 @@ public class HomeView extends javax.swing.JFrame {
         customer_id=credentials[0];
         signUpModel = new SignUpModel(name, location, phone_no, customer_id);
         //initializeTable();
-        
+        credentials_for_refresh=credentials;
         initComponents();
         bookingController = new BookingController();
         initializeTables();
     }
+    
+    
 //         public DefaultTableModel previousBookingsModel;
   //       public DefaultTableModel unpaidBookingsModel;
     private void initializeTables() {
@@ -258,6 +261,8 @@ public class HomeView extends javax.swing.JFrame {
         jButton15 = new javax.swing.JButton();
         jPanel7 = new javax.swing.JPanel();
         jButton12 = new javax.swing.JButton();
+        jButton21 = new javax.swing.JButton();
+        
         jLabel30 = new javax.swing.JLabel();
         jScrollPane3 = new javax.swing.JScrollPane();
         jTable3 = new javax.swing.JTable();
@@ -409,16 +414,25 @@ public class HomeView extends javax.swing.JFrame {
         jLabel15.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
         jLabel15.setText("Location    :");
         jPanel1.add(jLabel15);
+        
         jLabel15.setBounds(1120, 80, 130, 40);
 
         jButton20.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/logout.png"))); // NOI18N
         jButton20.setText("Logout");
+        jButton21.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/back.png")));
+        jButton21.setBounds(10, 10, 50, 50);
         jButton20.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         jButton20.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
         jButton20.setIconTextGap(0);
+        jPanel1.add(jButton21);
         jButton20.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 jButton20MouseClicked(evt);
+            }
+        });
+        jButton21.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jButton21MouseClicked(evt);
             }
         });
         jPanel1.add(jButton20);
@@ -863,7 +877,7 @@ public class HomeView extends javax.swing.JFrame {
         jComboBox10.setBounds(800, 607, 190, 31);
 
         jCheckBox5.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
-        jCheckBox5.setText("Van");
+        jCheckBox5.setText("Jeep");
         jCheckBox5.setIconTextGap(20);
         jPanel6.add(jCheckBox5);
         jCheckBox5.setBounds(550, 600, 160, 36);
@@ -909,7 +923,7 @@ public class HomeView extends javax.swing.JFrame {
         getContentPane().add(jPanel6, "Book Transportation");
 
         jPanel7.setLayout(null);
-
+        
         jButton12.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/back.png"))); // NOI18N
         jButton12.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -922,6 +936,7 @@ public class HomeView extends javax.swing.JFrame {
             }
         });
         jPanel7.add(jButton12);
+        
         jButton12.setBounds(10, 10, 50, 50);
 
         jLabel30.setFont(new java.awt.Font("Segoe UI", 0, 48)); // NOI18N
@@ -1191,7 +1206,15 @@ public class HomeView extends javax.swing.JFrame {
                         SignUpView SignUpView = new SignUpView();
                         SignUpView.setVisible(true);
                         this.dispose();
-    }                                      
+    }
+    
+    private void jButton21MouseClicked(java.awt.event.MouseEvent evt) {                                       
+        // TODO add your handling code here:
+                        
+                   HomeView homeView = new HomeView(credentials_for_refresh);
+                    homeView.setVisible(true);
+                    this.dispose();
+    }
 
     /**
      * @param args the command line arguments
@@ -1219,6 +1242,7 @@ public class HomeView extends javax.swing.JFrame {
     private javax.swing.JButton jButton7;
     private javax.swing.JButton jButton8;
     private javax.swing.JButton jButton9;
+    private javax.swing.JButton jButton21;
     private javax.swing.JCheckBox jCheckBox1;
     private javax.swing.JCheckBox jCheckBox2;
     private javax.swing.JCheckBox jCheckBox3;
