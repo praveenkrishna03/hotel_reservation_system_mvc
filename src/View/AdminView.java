@@ -4,9 +4,14 @@
  */
 package View;
 
+import Controller.BookingController;
 import View.*;
 import java.awt.CardLayout;
 import static java.awt.Frame.MAXIMIZED_BOTH;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.Date;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
@@ -15,6 +20,11 @@ import static java.awt.Frame.MAXIMIZED_BOTH;
 public class AdminView extends javax.swing.JFrame {
             public String name;
             public String worker_id;
+            DefaultTableModel requestHandleBookingsModel;
+            DefaultTableModel paymentHandleBookingsModel;
+            DefaultTableModel BookingsModel;
+            
+            private BookingController bookingController;
     /**
      * Creates new form HomeView
      */
@@ -23,6 +33,91 @@ public class AdminView extends javax.swing.JFrame {
 
         worker_id=credentials[1];
         initComponents();
+        bookingController = new BookingController();
+        initializeTables();
+    }
+    
+    
+    
+    public void initializeTables(){
+        BookingsModel = new DefaultTableModel();
+        paymentHandleBookingsModel = new DefaultTableModel(){
+            Class[] types = new Class [] {
+               java.lang.String.class, java.lang.Object.class, java.lang.Boolean.class,  java.lang.Object.class
+            };
+            
+           boolean[] canEdit = new boolean [] {
+                false,false, false, true, false, false, false, false
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+            
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        };
+        requestHandleBookingsModel = new DefaultTableModel(){
+            Class[] types = new Class [] {
+                java.lang.String.class,java.lang.Object.class, java.lang.Boolean.class, java.lang.Object.class,java.lang.Object.class,java.lang.Object.class,java.lang.Object.class,java.lang.Object.class
+            };
+            
+           boolean[] canEdit = new boolean [] {
+                false,false, true, false, false, false, false, false
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+            
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+            int i=0;
+            
+        };
+        BookingsModel.addColumn("User");
+        BookingsModel.addColumn("Bill No");
+        BookingsModel.addColumn("Room No");
+        BookingsModel.addColumn("Room Type");
+        BookingsModel.addColumn("Start Date");
+        BookingsModel.addColumn("End Date");
+        BookingsModel.addColumn("Amount");
+        
+        ResultSet BookingsModelResult = bookingController.getBookings();
+        ResultSet[] unpaidBookingsModelResult_admin = bookingController.getUnpaidBookings_admin();
+        
+        try{
+            while (BookingsModelResult.next()) {
+                int user=BookingsModelResult.getInt("user");
+                int BillNo = BookingsModelResult.getInt("bill_id");
+                int roomNo = BookingsModelResult.getInt("room_no");
+                String roomType = BookingsModelResult.getString("room_type");
+                Date startDate = BookingsModelResult.getDate("start_date");
+                Date endDate = BookingsModelResult.getDate("end_date");
+                String totalAmount = BookingsModelResult.getString("Total_amount");
+
+                // Add a row to the table model
+                BookingsModel.addRow(new Object[]{user,BillNo, roomNo, roomType, startDate, endDate, totalAmount});
+            }
+
+            // Close result set and prepared statement
+            BookingsModelResult.close();
+       }catch(SQLException ex) {
+            //model.addRow(new Object[]{null, null, "No data", null, null, null});
+            // Handle exceptions
+            ex.printStackTrace();
+        }
+        
+        paymentHandleBookingsModel.addColumn("Type");
+        paymentHandleBookingsModel.addColumn("Bill No");
+        paymentHandleBookingsModel.addColumn("Generate Bill");
+        paymentHandleBookingsModel.addColumn("Amount");
+        
+        
+        jTable2.setModel(BookingsModel); // Set the model for jTable2
+            
     }
 
     /**
@@ -36,10 +131,6 @@ public class AdminView extends javax.swing.JFrame {
 
         jPanel1 = new javax.swing.JPanel();
         jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
-        jButton4 = new javax.swing.JButton();
-        jButton5 = new javax.swing.JButton();
         jButton6 = new javax.swing.JButton();
         jScrollPane2 = new javax.swing.JScrollPane();
         jTable2 = new javax.swing.JTable();
@@ -48,25 +139,13 @@ public class AdminView extends javax.swing.JFrame {
         jLabel11 = new javax.swing.JLabel();
         jLabel8 = new javax.swing.JLabel();
         jLabel9 = new javax.swing.JLabel();
-        jPanel2 = new javax.swing.JPanel();
-        jLabel2 = new javax.swing.JLabel();
-        jButton7 = new javax.swing.JButton();
         jPanel3 = new javax.swing.JPanel();
         jLabel3 = new javax.swing.JLabel();
         jButton8 = new javax.swing.JButton();
-        jPanel4 = new javax.swing.JPanel();
-        jLabel4 = new javax.swing.JLabel();
-        jButton9 = new javax.swing.JButton();
-        jPanel5 = new javax.swing.JPanel();
-        jLabel5 = new javax.swing.JLabel();
-        jButton10 = new javax.swing.JButton();
         jPanel6 = new javax.swing.JPanel();
         jLabel6 = new javax.swing.JLabel();
         jButton11 = new javax.swing.JButton();
-        jPanel7 = new javax.swing.JPanel();
-        jLabel7 = new javax.swing.JLabel();
-        jButton12 = new javax.swing.JButton();
-
+        
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setExtendedState(MAXIMIZED_BOTH);
         getContentPane().setLayout(new java.awt.CardLayout());
@@ -82,49 +161,9 @@ public class AdminView extends javax.swing.JFrame {
         jPanel1.add(jButton1);
         jButton1.setBounds(300, 170, 180, 70);
 
-        jButton2.setText("Room Status");
-        jButton2.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jButton2MouseClicked(evt);
-            }
-        });
-        jPanel1.add(jButton2);
-        jButton2.setBounds(40, 170, 180, 70);
-
-        jButton3.setText("Food Bookings");
-        jButton3.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jButton3MouseClicked(evt);
-            }
-        });
-        jPanel1.add(jButton3);
-        jButton3.setBounds(810, 170, 180, 70);
-
-        jButton4.setText("Event Bookings");
-        jButton4.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jButton4MouseClicked(evt);
-            }
-        });
-        jButton4.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton4ActionPerformed(evt);
-            }
-        });
-        jPanel1.add(jButton4);
-        jButton4.setBounds(560, 170, 180, 70);
-
-        jButton5.setText("All Bills");
-        jButton5.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jButton5MouseClicked(evt);
-            }
-        });
-        jPanel1.add(jButton5);
-        jButton5.setBounds(1330, 170, 180, 70);
-
-        jButton6.setText("Transportation Bookings");
-        jButton6.setToolTipText("");
+        
+        jPanel1.add(jButton6);
+        jButton6.setText("Accept Payments");
         jButton6.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 jButton6MouseClicked(evt);
@@ -133,32 +172,11 @@ public class AdminView extends javax.swing.JFrame {
         jPanel1.add(jButton6);
         jButton6.setBounds(1070, 170, 180, 70);
 
-        jTable2.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {null, null, null, null, null, null, null}
-            },
-            new String [] {
-                "S.No", "User ID", "Room No", "No of Guests", "Start Date", "End Date", "Amount"
-            }
-        ) {
-            Class[] types = new Class [] {
-                java.lang.Integer.class, java.lang.Object.class, java.lang.Integer.class, java.lang.Integer.class, java.lang.String.class, java.lang.String.class, java.lang.Integer.class
-            };
-            boolean[] canEdit = new boolean [] {
-                false, true, false, false, false, false, false
-            };
-
-            public Class getColumnClass(int columnIndex) {
-                return types [columnIndex];
-            }
-
-            public boolean isCellEditable(int rowIndex, int columnIndex) {
-                return canEdit [columnIndex];
-            }
-        });
+        
         jTable2.setUpdateSelectionOnSort(false);
         jTable2.setVerifyInputWhenFocusTarget(false);
         jScrollPane2.setViewportView(jTable2);
+        jTable2.setRowHeight(60);
 
         jPanel1.add(jScrollPane2);
         jScrollPane2.setBounds(40, 300, 1470, 402);
@@ -191,33 +209,7 @@ public class AdminView extends javax.swing.JFrame {
 
         getContentPane().add(jPanel1, "home");
 
-        jPanel2.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jPanel2MouseClicked(evt);
-            }
-        });
-        jPanel2.setLayout(null);
-
-        jLabel2.setText("Book Room");
-        jPanel2.add(jLabel2);
-        jLabel2.setBounds(930, 100, 200, 16);
-
-        jButton7.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/back.png"))); // NOI18N
-        jButton7.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jButton7MouseClicked(evt);
-            }
-        });
-        jButton7.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton7ActionPerformed(evt);
-            }
-        });
-        jPanel2.add(jButton7);
-        jButton7.setBounds(10, 10, 50, 50);
-
-        getContentPane().add(jPanel2, "Book Room");
-
+        
         jPanel3.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 jPanel3MouseClicked(evt);
@@ -227,7 +219,9 @@ public class AdminView extends javax.swing.JFrame {
 
         jLabel3.setText("Cancel Room");
         jPanel3.add(jLabel3);
-        jLabel3.setBounds(980, 490, 100, 16);
+        jLabel3.setBounds(600, 10, 400, 80);
+        jLabel3.setFont(new java.awt.Font("Segoe UI", 0, 48)); // NOI18N
+        jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
 
         jButton8.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/back.png"))); // NOI18N
         jButton8.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -245,55 +239,18 @@ public class AdminView extends javax.swing.JFrame {
 
         getContentPane().add(jPanel3, "Cancel Room");
 
-        jPanel4.setLayout(null);
-
-        jLabel4.setText("Book Event");
-        jPanel4.add(jLabel4);
-        jLabel4.setBounds(980, 490, 150, 16);
-
-        jButton9.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/back.png"))); // NOI18N
-        jButton9.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jButton9MouseClicked(evt);
-            }
-        });
-        jButton9.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton9ActionPerformed(evt);
-            }
-        });
-        jPanel4.add(jButton9);
-        jButton9.setBounds(10, 10, 50, 50);
-
-        getContentPane().add(jPanel4, "Book Event");
-
-        jPanel5.setLayout(null);
-
-        jLabel5.setText("Book Food");
-        jPanel5.add(jLabel5);
-        jLabel5.setBounds(980, 490, 80, 16);
-
-        jButton10.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/back.png"))); // NOI18N
-        jButton10.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jButton10MouseClicked(evt);
-            }
-        });
-        jButton10.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton10ActionPerformed(evt);
-            }
-        });
-        jPanel5.add(jButton10);
-        jButton10.setBounds(10, 10, 50, 50);
-
-        getContentPane().add(jPanel5, "Book Food");
-
+        
         jPanel6.setLayout(null);
 
-        jLabel6.setText("Book Transportation");
+        jLabel6.setText("Accept Payments");
         jPanel6.add(jLabel6);
-        jLabel6.setBounds(990, 480, 120, 16);
+        jLabel6.setBounds(600, 10, 400, 80);
+        
+        jLabel6.setFont(new java.awt.Font("Segoe UI", 0, 48)); // NOI18N
+        jLabel6.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        //jLabel2.setText("Book Room");
+        //jPanel2.add(jLabel2);
+        //jLabel2.setBounds(640, 10, 330, 80);
 
         jButton11.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/back.png"))); // NOI18N
         jButton11.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -311,40 +268,11 @@ public class AdminView extends javax.swing.JFrame {
 
         getContentPane().add(jPanel6, "Book Transportation");
 
-        jPanel7.setLayout(null);
-
-        jLabel7.setText("Bill Generation");
-        jPanel7.add(jLabel7);
-        jLabel7.setBounds(990, 480, 150, 16);
-
-        jButton12.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/back.png"))); // NOI18N
-        jButton12.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jButton12MouseClicked(evt);
-            }
-        });
-        jButton12.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton12ActionPerformed(evt);
-            }
-        });
-        jPanel7.add(jButton12);
-        jButton12.setBounds(10, 10, 50, 50);
-
-        getContentPane().add(jPanel7, "Bill Generation");
-
+        
         pack();
     }// </editor-fold>                        
 
-    private void jPanel2MouseClicked(java.awt.event.MouseEvent evt) {                                     
-
-    }                                    
-
-    private void jButton2MouseClicked(java.awt.event.MouseEvent evt) {                                      
-        // TODO add your handling code here:
-                CardLayout cardLayout = (CardLayout) getContentPane().getLayout();
-                cardLayout.show(getContentPane(), "Book Room");
-    }                                     
+                                         
 
     private void jButton1MouseClicked(java.awt.event.MouseEvent evt) {                                      
         // TODO add your handling code here:
@@ -357,17 +285,7 @@ public class AdminView extends javax.swing.JFrame {
                 
     }                                    
 
-    private void jButton4MouseClicked(java.awt.event.MouseEvent evt) {                                      
-        // TODO add your handling code here:
-                CardLayout cardLayout = (CardLayout) getContentPane().getLayout();
-        cardLayout.show(getContentPane(), "Book Event");
-    }                                     
-
-    private void jButton3MouseClicked(java.awt.event.MouseEvent evt) {                                      
-        // TODO add your handling code here:
-                CardLayout cardLayout = (CardLayout) getContentPane().getLayout();
-        cardLayout.show(getContentPane(), "Book Food");
-    }                                     
+                                         
 
     private void jButton6MouseClicked(java.awt.event.MouseEvent evt) {                                      
         // TODO add your handling code here:
@@ -375,15 +293,6 @@ public class AdminView extends javax.swing.JFrame {
         cardLayout.show(getContentPane(), "Book Transportation");
     }                                     
 
-    private void jButton5MouseClicked(java.awt.event.MouseEvent evt) {                                      
-        // TODO add your handling code here:
-                CardLayout cardLayout = (CardLayout) getContentPane().getLayout();
-        cardLayout.show(getContentPane(), "Bill Generation");
-    }                                     
-
-    private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {                                         
-        // TODO add your handling code here:
-    }                                        
 
     private void jButton7MouseClicked(java.awt.event.MouseEvent evt) {                                      
         // TODO add your handling code here:
@@ -451,37 +360,23 @@ public class AdminView extends javax.swing.JFrame {
      */
 
     // Variables declaration - do not modify                     
+    
     private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton10;
     private javax.swing.JButton jButton11;
-    private javax.swing.JButton jButton12;
-    private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
-    private javax.swing.JButton jButton4;
-    private javax.swing.JButton jButton5;
     private javax.swing.JButton jButton6;
-    private javax.swing.JButton jButton7;
     private javax.swing.JButton jButton8;
-    private javax.swing.JButton jButton9;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
-    private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel4;
-    private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
-    private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
-    private javax.swing.JPanel jPanel4;
-    private javax.swing.JPanel jPanel5;
     private javax.swing.JPanel jPanel6;
-    private javax.swing.JPanel jPanel7;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTable jTable2;
+    
     // End of variables declaration                   
 }

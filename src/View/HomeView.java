@@ -11,6 +11,7 @@ import Controller.*;
 import java.awt.CardLayout;
 import Model.SignUpModel;
 import static java.awt.Frame.MAXIMIZED_BOTH;
+import java.awt.List;
 import java.awt.event.MouseEvent;
 import java.sql.Connection;
 import javax.swing.table.DefaultTableModel;
@@ -18,6 +19,8 @@ import java.sql.*;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.logging.Level;
@@ -40,6 +43,8 @@ public class HomeView extends javax.swing.JFrame {
             public String location;
             public String customer_id;
             public String password;
+            DefaultTableModel cancelUnpaidBookingsModel;
+            //DefaultTableModel unpaidBookingsModel;
     /**
      * Creates new form HomeView
      */
@@ -66,15 +71,15 @@ public class HomeView extends javax.swing.JFrame {
     
 //         public DefaultTableModel previousBookingsModel;
   //       public DefaultTableModel unpaidBookingsModel;
-    private void initializeTables() {
+    public void initializeTables() {
         DefaultTableModel previousBookingsModel = new DefaultTableModel();
         DefaultTableModel unpaidBookingsModel = new DefaultTableModel(){
             Class[] types = new Class [] {
-                java.lang.Object.class,java.lang.Object.class, java.lang.Boolean.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class
+               java.lang.String.class, java.lang.Object.class, java.lang.Boolean.class,  java.lang.Object.class
             };
             
            boolean[] canEdit = new boolean [] {
-                false, false, true, false, false, false, false
+                false,false, false, true, false, false, false, false
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -85,6 +90,27 @@ public class HomeView extends javax.swing.JFrame {
                 return canEdit [columnIndex];
             }
         };
+        cancelUnpaidBookingsModel = new DefaultTableModel(){
+            Class[] types = new Class [] {
+                java.lang.String.class,java.lang.Object.class, java.lang.Boolean.class, java.lang.Object.class,java.lang.Object.class,java.lang.Object.class,java.lang.Object.class,java.lang.Object.class
+            };
+            
+           boolean[] canEdit = new boolean [] {
+                false,false, true, false, false, false, false, false
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+            
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+            int i=0;
+            
+        };
+        
+        
 
 // Define the table structure
         previousBookingsModel.addColumn("Bill No");
@@ -95,7 +121,8 @@ public class HomeView extends javax.swing.JFrame {
         previousBookingsModel.addColumn("Amount");
 
        ResultSet previousBookingsModelResult = bookingController.getPreviousBookings(Integer.parseInt(customer_id));
-       ResultSet unpaidBookingsModelResult = bookingController.getUnpaidBookings(Integer.parseInt(customer_id));
+       ResultSet[] unpaidBookingsModelResult = bookingController.getUnpaidBookings(Integer.parseInt(customer_id));
+       ResultSet[] cancelUnpaidBookingsModelResult = bookingController.getUnpaidBookings(Integer.parseInt(customer_id));
            
        try{
             while (previousBookingsModelResult.next()) {
@@ -119,40 +146,165 @@ public class HomeView extends javax.swing.JFrame {
         }
         
        
-       
+        unpaidBookingsModel.addColumn("Type");
         unpaidBookingsModel.addColumn("Bill No");
-        unpaidBookingsModel.addColumn("Room No");
+        //unpaidBookingsModel.addColumn("Room No");
         unpaidBookingsModel.addColumn("Generate Bill");
-        unpaidBookingsModel.addColumn("Room Type");
-        unpaidBookingsModel.addColumn("Start Date");
-        unpaidBookingsModel.addColumn("End Date");
+        //unpaidBookingsModel.addColumn("Room Type");
+        //unpaidBookingsModel.addColumn("Start Date");
+        //unpaidBookingsModel.addColumn("End Date");
         unpaidBookingsModel.addColumn("Amount");
        
 
         try{
-            while (unpaidBookingsModelResult.next()) {
-                int BillNo = unpaidBookingsModelResult.getInt("bill_id");
-                int roomNo = unpaidBookingsModelResult.getInt("room_no");
+            while (unpaidBookingsModelResult[0].next()) {
+                int BillNo = unpaidBookingsModelResult[0].getInt("bill_id");
+                //int roomNo = unpaidBookingsModelResult[0].getInt("room_no");
                
-                String roomType = unpaidBookingsModelResult.getString("room_type");
-                Date startDate = unpaidBookingsModelResult.getDate("start_date");
-                Date endDate = unpaidBookingsModelResult.getDate("end_date");
-                String totalAmount = unpaidBookingsModelResult.getString("Total_amount");
+                //String roomType = unpaidBookingsModelResult[0].getString("room_type");
+                //Date startDate = unpaidBookingsModelResult[0].getDate("start_date");
+                //Date endDate = unpaidBookingsModelResult[0].getDate("end_date");
+                String totalAmount = unpaidBookingsModelResult[0].getString("Total_amount");
 
                 // Add a row to the table model
-                unpaidBookingsModel.addRow(new Object[]{BillNo ,roomNo,false, roomType, startDate, endDate, totalAmount});
+                unpaidBookingsModel.addRow(new Object[]{"Room",BillNo ,false, totalAmount});
             }
 
             // Close result set and prepared statement
-            unpaidBookingsModelResult.close();
+            unpaidBookingsModelResult[0].close();
        }catch(SQLException ex) {
             //model.addRow(new Object[]{null, null, "No data", null, null, null});
             // Handle exceptions
             ex.printStackTrace();
         }
+        
+        try{
+            while (unpaidBookingsModelResult[1].next()) {
+                int BillNo = unpaidBookingsModelResult[1].getInt("food_bill_id");
+                //int roomNo = unpaidBookingsModelResult[0].getInt("room_no");
+               
+                //String roomType = unpaidBookingsModelResult[0].getString("room_type");
+                //Date startDate = unpaidBookingsModelResult[0].getDate("start_date");
+                //Date endDate = unpaidBookingsModelResult[0].getDate("end_date");
+                String totalAmount = unpaidBookingsModelResult[1].getString("amount");
 
+                // Add a row to the table model
+                unpaidBookingsModel.addRow(new Object[]{"Food",BillNo ,false, totalAmount});
+            }
+
+            // Close result set and prepared statement
+            unpaidBookingsModelResult[1].close();
+       }catch(SQLException ex) {
+            //model.addRow(new Object[]{null, null, "No data", null, null, null});
+            // Handle exceptions
+            ex.printStackTrace();
+        }
+        
+        
+        try{
+            while (unpaidBookingsModelResult[2].next()) {
+                int BillNo = unpaidBookingsModelResult[2].getInt("travel_bill_id");
+                //int roomNo = unpaidBookingsModelResult[0].getInt("room_no");
+               
+                //String roomType = unpaidBookingsModelResult[0].getString("room_type");
+                //Date startDate = unpaidBookingsModelResult[0].getDate("start_date");
+                //Date endDate = unpaidBookingsModelResult[0].getDate("end_date");
+                String totalAmount = unpaidBookingsModelResult[2].getString("amount");
+
+                // Add a row to the table model
+                unpaidBookingsModel.addRow(new Object[]{"Travel",BillNo ,false, totalAmount});
+            }
+
+            // Close result set and prepared statement
+            unpaidBookingsModelResult[2].close();
+       }catch(SQLException ex) {
+            //model.addRow(new Object[]{null, null, "No data", null, null, null});
+            // Handle exceptions
+            ex.printStackTrace();
+        }
+        
+        
+        try{
+            while (unpaidBookingsModelResult[3].next()) {
+                int BillNo = unpaidBookingsModelResult[3].getInt("event_id");
+                //int roomNo = unpaidBookingsModelResult[0].getInt("room_no");
+               
+                //String roomType = unpaidBookingsModelResult[0].getString("room_type");
+                //Date startDate = unpaidBookingsModelResult[0].getDate("start_date");
+                //Date endDate = unpaidBookingsModelResult[0].getDate("end_date");
+                String totalAmount = unpaidBookingsModelResult[3].getString("amount");
+
+                // Add a row to the table model
+                unpaidBookingsModel.addRow(new Object[]{"Event",BillNo ,false, totalAmount});
+            }
+
+            // Close result set and prepared statement
+            unpaidBookingsModelResult[3].close();
+       }catch(SQLException ex) {
+            //model.addRow(new Object[]{null, null, "No data", null, null, null});
+            // Handle exceptions
+            ex.printStackTrace();
+        }
+        
+        
+        
+        
+        
+        cancelUnpaidBookingsModel.addColumn("Type");
+        cancelUnpaidBookingsModel.addColumn("Bill No");
+        cancelUnpaidBookingsModel.addColumn("Cancel");
+        cancelUnpaidBookingsModel.addColumn("Room No");
+        cancelUnpaidBookingsModel.addColumn("Room Type");
+        cancelUnpaidBookingsModel.addColumn("Start Date");
+        cancelUnpaidBookingsModel.addColumn("End Date");
+        cancelUnpaidBookingsModel.addColumn("Amount");
+       
+
+        try{
+            while (cancelUnpaidBookingsModelResult[0].next()) {
+                int BillNo = cancelUnpaidBookingsModelResult[0].getInt("bill_id");
+                int roomNo = cancelUnpaidBookingsModelResult[0].getInt("room_no");
+               
+                String roomType = cancelUnpaidBookingsModelResult[0].getString("room_type");
+                Date startDate = cancelUnpaidBookingsModelResult[0].getDate("start_date");
+                Date endDate = cancelUnpaidBookingsModelResult[0].getDate("end_date");
+                String totalAmount = cancelUnpaidBookingsModelResult[0].getString("Total_amount");
+
+                // Add a row to the table model
+                cancelUnpaidBookingsModel.addRow(new Object[]{"Room",BillNo ,false,roomNo,roomType,startDate,endDate, totalAmount});
+            }
+
+            // Close result set and prepared statement
+            cancelUnpaidBookingsModelResult[0].close();
+       }catch(SQLException ex) {
+            //model.addRow(new Object[]{null, null, "No data", null, null, null});
+            // Handle exceptions
+            ex.printStackTrace();
+        }
+        
+        
         jTable2.setModel(previousBookingsModel); // Set the model for jTable2
         jTable3.setModel(unpaidBookingsModel); // Set the model for jTable2
+        jTable1.setModel(cancelUnpaidBookingsModel); // Set the model for jTable2
+    }
+    
+    
+    public int[] getFirstColumnValuesForTrueBoolean() {
+    int rowCount = cancelUnpaidBookingsModel.getRowCount();
+    int[] values = new int[rowCount];
+    int i=0;
+    for (int row = 0; row < rowCount; row++) {
+        Boolean isTrue = (Boolean) cancelUnpaidBookingsModel.getValueAt(row, 2); // Check the third column (index 2)
+        Object firstColumnValue = cancelUnpaidBookingsModel.getValueAt(row, 1);
+        if (isTrue) {
+            values[i] = (int) firstColumnValue;
+
+            i++;
+        }
+    }
+    
+    // Trim the values array to remove any unused elements
+    return Arrays.copyOf(values, i);
     }
     
       
@@ -234,7 +386,7 @@ public class HomeView extends javax.swing.JFrame {
         jComboBox19 = new javax.swing.JComboBox<>();
         jLabel40 = new javax.swing.JLabel();
         jComboBox20 = new javax.swing.JComboBox<>();
-        jTextField1 = new javax.swing.JTextField();
+        //jTextField1 = new javax.swing.JTextField();
         jPanel5 = new javax.swing.JPanel();
         jButton10 = new javax.swing.JButton();
         jLabel25 = new javax.swing.JLabel();
@@ -257,6 +409,7 @@ public class HomeView extends javax.swing.JFrame {
         jComboBox12 = new javax.swing.JComboBox<>();
         jCheckBox7 = new javax.swing.JCheckBox();
         jComboBox13 = new javax.swing.JComboBox<>();
+        jComboBox21 = new javax.swing.JComboBox<>();
         jCheckBox8 = new javax.swing.JCheckBox();
         jButton15 = new javax.swing.JButton();
         jPanel7 = new javax.swing.JPanel();
@@ -264,6 +417,10 @@ public class HomeView extends javax.swing.JFrame {
         jButton21 = new javax.swing.JButton();
         
         jLabel30 = new javax.swing.JLabel();
+        jLabel41 = new javax.swing.JLabel();
+        jLabel42 = new javax.swing.JLabel();
+        jLabel43 = new javax.swing.JLabel();
+        jLabel44 = new javax.swing.JLabel();
         jScrollPane3 = new javax.swing.JScrollPane();
         jTable3 = new javax.swing.JTable();
         jButton19 = new javax.swing.JButton();
@@ -585,7 +742,7 @@ public class HomeView extends javax.swing.JFrame {
         jPanel3.add(jLabel28);
         jLabel28.setBounds(640, 10, 330, 80);
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        /*jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null, null, null, null},
                 {null, null, null, null, null, null, null},
@@ -611,7 +768,7 @@ public class HomeView extends javax.swing.JFrame {
             public boolean isCellEditable(int rowIndex, int columnIndex) {
                 return canEdit [columnIndex];
             }
-        });
+        });*/
         jTable1.setRowHeight(60);
         jScrollPane1.setViewportView(jTable1);
 
@@ -622,7 +779,12 @@ public class HomeView extends javax.swing.JFrame {
         jButton18.setText("Send Request");
         jPanel3.add(jButton18);
         jButton18.setBounds(740, 700, 160, 30);
-
+        jButton18.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jButton18MouseClicked(evt);
+            }
+        });
+        
         getContentPane().add(jPanel3, "Cancel Room");
 
         jPanel4.setLayout(null);
@@ -680,6 +842,13 @@ public class HomeView extends javax.swing.JFrame {
         jButton17.setText("Book");
         jPanel4.add(jButton17);
         jButton17.setBounds(740, 550, 100, 30);
+        jButton17.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jButton17MouseClicked(evt);
+            }
+
+            
+        });
 
         jLabel35.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel35.setText("Day");
@@ -735,10 +904,14 @@ public class HomeView extends javax.swing.JFrame {
         jPanel4.add(jComboBox20);
         jComboBox20.setBounds(1070, 380, 90, 22);
 
-        jTextField1.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
-        jPanel4.add(jTextField1);
-        jTextField1.setBounds(800, 207, 230, 40);
+        //jTextField1.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        //jPanel4.add(jTextField1);
+        //jTextField1.setBounds(800, 207, 230, 40);
 
+        jComboBox21.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        jComboBox21.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "25", "50", "75", "100", "150" }));
+        jPanel4.add(jComboBox21);
+        jComboBox21.setBounds(800, 207, 230, 40);
         getContentPane().add(jPanel4, "Book Event");
 
         jPanel5.setLayout(null);
@@ -876,17 +1049,17 @@ public class HomeView extends javax.swing.JFrame {
         jPanel6.add(jComboBox10);
         jComboBox10.setBounds(800, 607, 190, 31);
 
-        jCheckBox5.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
-        jCheckBox5.setText("Jeep");
-        jCheckBox5.setIconTextGap(20);
-        jPanel6.add(jCheckBox5);
-        jCheckBox5.setBounds(550, 600, 160, 36);
+        jLabel41.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
+        jLabel41.setText("Jeep");
+        //jLabel41.setIconTextGap(20);
+        jPanel6.add(jLabel41);
+        jLabel41.setBounds(550, 600, 160, 36);
 
-        jCheckBox6.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
-        jCheckBox6.setText("Bus");
-        jCheckBox6.setIconTextGap(20);
-        jPanel6.add(jCheckBox6);
-        jCheckBox6.setBounds(550, 300, 160, 36);
+        jLabel42.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
+        jLabel42.setText("Bus");
+        //jLabel42.setIconTextGap(20);
+        jPanel6.add(jLabel42);
+        jLabel42.setBounds(550, 300, 160, 36);
 
         jComboBox11.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         jComboBox11.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "0", "1", "2", "3", "4", "5" }));
@@ -898,27 +1071,34 @@ public class HomeView extends javax.swing.JFrame {
         jPanel6.add(jComboBox12);
         jComboBox12.setBounds(800, 407, 190, 31);
 
-        jCheckBox7.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
-        jCheckBox7.setText("Car");
-        jCheckBox7.setIconTextGap(20);
-        jPanel6.add(jCheckBox7);
-        jCheckBox7.setBounds(550, 400, 160, 36);
+        jLabel43.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
+        jLabel43.setText("Car");
+        //jLabel43.setIconTextGap(20);
+        jPanel6.add(jLabel43);
+        jLabel43.setBounds(550, 400, 160, 36);
 
         jComboBox13.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         jComboBox13.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "0", "1", "2", "3", "4", "5" }));
         jPanel6.add(jComboBox13);
         jComboBox13.setBounds(800, 507, 190, 31);
 
-        jCheckBox8.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
-        jCheckBox8.setText("Van");
-        jCheckBox8.setIconTextGap(20);
-        jPanel6.add(jCheckBox8);
-        jCheckBox8.setBounds(550, 500, 160, 36);
+        jLabel44.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
+        jLabel44.setText("Van");
+        //jLabel44.setIconTextGap(20);
+        jPanel6.add(jLabel44);
+        jLabel44.setBounds(550, 500, 160, 36);
 
         jButton15.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         jButton15.setText("Book");
         jPanel6.add(jButton15);
         jButton15.setBounds(730, 680, 100, 30);
+        jButton15.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jButton15MouseClicked(evt);
+            }
+
+            
+        });
 
         getContentPane().add(jPanel6, "Book Transportation");
 
@@ -1164,6 +1344,90 @@ public class HomeView extends javax.swing.JFrame {
         
     }
     
+    private void jButton17MouseClicked(java.awt.event.MouseEvent evt) {                                      
+        // TODO add your handling code here:
+        String start_s=(String) jComboBox17.getSelectedItem();
+        String end_s=(String) jComboBox20.getSelectedItem();
+        
+        
+        int room_type = (jComboBox21.getSelectedIndex()+1)+5;
+        int start_day = jComboBox15.getSelectedIndex()+1;
+        int start_month = jComboBox16.getSelectedIndex()+1;
+        int start_year = Integer.parseInt(start_s);
+        int end_day = jComboBox18.getSelectedIndex()+1;
+        int end_month = jComboBox19.getSelectedIndex()+1;
+        int end_year = Integer.parseInt(end_s);
+        int cust_id=Integer.parseInt(customer_id);
+
+        Calendar calendar_start = Calendar.getInstance();
+        calendar_start.set(Calendar.YEAR, start_year);
+        calendar_start.set(Calendar.MONTH, start_month - 1); // Adjust for the 0-based month
+        calendar_start.set(Calendar.DAY_OF_MONTH, start_day);
+        Date start = calendar_start.getTime();
+
+        Calendar calendar_end = Calendar.getInstance();
+        calendar_end.set(Calendar.YEAR, end_year);
+        calendar_end.set(Calendar.MONTH, end_month - 1); // Adjust for the 0-based month
+        calendar_end.set(Calendar.DAY_OF_MONTH, end_day);
+        Date end = calendar_end.getTime();
+        
+        java.sql.Date start_date = new java.sql.Date(start.getTime());
+        java.sql.Date end_date = new java.sql.Date(end.getTime());
+        java.sql.Date current_date = new java.sql.Date(System.currentTimeMillis());
+
+        
+        if (start_date.compareTo(current_date) >= 0) {
+            if (start_date.compareTo(end_date) <= 0) {
+                ResultSet result = bookingController.BookEvents(cust_id, room_type, start_date, end_date);
+                if(result!=null){
+                    try {
+                        while (result.next()) {
+
+                            int BillNo = result.getInt("event_id");
+                            int roomNo = result.getInt("hall");
+                            int roomType = result.getInt("no_of_attendees");
+                            Date startDate = result.getDate("event_start");
+                            Date endDate = result.getDate("event_end");
+                            String totalAmount = result.getString("amount");
+                            JOptionPane.showMessageDialog(null, "Hall no : "+roomNo+"\nHall Type : "+roomType+"\nStart Date : "+startDate+"\nEnd Date : "+endDate+"\nAmount : "+totalAmount, "Hall Booked", JOptionPane.INFORMATION_MESSAGE);
+
+
+                        }
+                    } catch (SQLException ex) {
+                        Logger.getLogger(HomeView.class.getName()).log(Level.SEVERE, null, ex);
+
+                    }
+
+                }else{
+                    JOptionPane.showMessageDialog(null, "Hall not available", "Hall Not Booked", JOptionPane.INFORMATION_MESSAGE);
+                }
+            } else {
+        // Show an error message if start_date is greater than end_date
+                JOptionPane.showMessageDialog(null, "Start date must be less than or equal to end date", "Invalid Date Range", JOptionPane.ERROR_MESSAGE);
+            }
+        } else {
+    // Show an error message if start_date is earlier than the current date
+            JOptionPane.showMessageDialog(null, "Start date must be greater than or equal to the current date", "Invalid Start Date", JOptionPane.ERROR_MESSAGE);
+        }
+        
+        
+        
+    }
+    
+    
+    
+    
+    
+    public void jButton18MouseClicked(java.awt.event.MouseEvent evt) {
+        int[] bill_no_s = getFirstColumnValuesForTrueBoolean();
+        boolean done=bookingController.cancelRequestsSend(bill_no_s);
+        if(done){
+            JOptionPane.showMessageDialog(null, "Cancel Request Sent", "Request Sent", JOptionPane.INFORMATION_MESSAGE);
+        }else{
+            JOptionPane.showMessageDialog(null, "Cancel Request Not Sent", "Request not Sent", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+    
     
     private void jButton14MouseClicked(java.awt.event.MouseEvent evt) {
         String days=(String) jComboBox8.getSelectedItem();
@@ -1182,6 +1446,30 @@ public class HomeView extends javax.swing.JFrame {
 
         }
         else{
+            JOptionPane.showMessageDialog(null, "Something Error", "Not Booked", JOptionPane.INFORMATION_MESSAGE);
+        }
+        
+    
+    }
+    
+    private void jButton15MouseClicked(java.awt.event.MouseEvent evt) {
+        String days=(String) jComboBox8.getSelectedItem();
+        int bus=jComboBox11.getSelectedIndex();
+        int car=jComboBox12.getSelectedIndex();
+        int van=jComboBox13.getSelectedIndex();
+        int jeep=jComboBox10.getSelectedIndex();
+        int cust_id=Integer.parseInt(customer_id);
+        int no_of_days = Integer.parseInt(days);
+        
+        
+        boolean done=bookingController.BookTransport(cust_id, no_of_days, bus, car, van, jeep);
+        
+        if(done){
+            JOptionPane.showMessageDialog(null, "Transportation Booking successful", "Booked", JOptionPane.INFORMATION_MESSAGE);
+
+        }
+        else{
+            JOptionPane.showMessageDialog(null, "Something Error", "Not Booked", JOptionPane.INFORMATION_MESSAGE);
         }
         
     
@@ -1274,6 +1562,7 @@ public class HomeView extends javax.swing.JFrame {
     private javax.swing.JComboBox<String> jComboBox19;
     private javax.swing.JComboBox<String> jComboBox2;
     private javax.swing.JComboBox<String> jComboBox20;
+    private javax.swing.JComboBox<String> jComboBox21;
     private javax.swing.JComboBox<String> jComboBox3;
     private javax.swing.JComboBox<String> jComboBox4;
     private javax.swing.JComboBox<String> jComboBox5;
@@ -1314,6 +1603,11 @@ public class HomeView extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel38;
     private javax.swing.JLabel jLabel39;
     private javax.swing.JLabel jLabel40;
+    private javax.swing.JLabel jLabel41;
+    private javax.swing.JLabel jLabel42;
+    private javax.swing.JLabel jLabel43;
+    private javax.swing.JLabel jLabel44;
+    
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
@@ -1329,6 +1623,6 @@ public class HomeView extends javax.swing.JFrame {
     private javax.swing.JTable jTable1;
     private javax.swing.JTable jTable2;
     private javax.swing.JTable jTable3;
-    private javax.swing.JTextField jTextField1;
+    //private javax.swing.JTextField jTextField1;
     // End of variables declaration                   
 }
