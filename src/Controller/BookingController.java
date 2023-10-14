@@ -102,7 +102,58 @@ public class BookingController {
                         
                     }
                     
+                }else if (room_cap==room_type&&!room_availability){
+                    
+                    String query1 = "SELECT * FROM bookings WHERE room_no = "+room_no;
+                    PreparedStatement preparedStatement1 = con.prepareStatement(query1);
+                    ResultSet reference2 = preparedStatement1.executeQuery();
+                    while (reference2.next()) {
+                        java.sql.Date start = reference2.getDate("start_date");
+                        java.sql.Date end = reference2.getDate("end_date");
+                        if ((start.before(start_date) && end.before(start_date)) || (start.after(end_date) && end.before(end_date))){
+                            try{
+                                String query2 = "INSERT INTO bookings (user, room_no, room_type, start_date, end_date, total_amount, paid) VALUES (?,?,?,?,?,?,?)";
+                                PreparedStatement preparedStatement2 = con.prepareStatement(query2);
+
+                                preparedStatement2.setInt(1,customer_id);
+                                preparedStatement2.setInt(2,room_no);
+                                preparedStatement2.setInt(3,room_type);
+                                preparedStatement2.setDate(4,start_date);
+                                preparedStatement2.setDate(5,end_date);
+                                preparedStatement2.setInt(6,amount);
+                                preparedStatement2.setInt(7,0);
+                                roombooked=true;
+
+
+                                int rowsUpdated1 = preparedStatement2.executeUpdate();
+
+                                String query3 = "UPDATE hotel_rooms SET room_availability = 0 WHERE room_no = ?";
+                                PreparedStatement preparedStatement3 = con.prepareStatement(query3);
+                                preparedStatement3.setInt(1, room_no); // Set the room_no parameter
+                                int rowsUpdated = preparedStatement3.executeUpdate(); // Use executeUpdate() for non-query statements
+
+                                String query4 = "SELECT * FROM bookings WHERE room_no = ? AND start_date= ?";
+                                PreparedStatement preparedStatement4 = con.prepareStatement(query4);
+                                preparedStatement4.setInt(1, room_no);
+                                preparedStatement4.setDate(2, start_date);
+
+                                result=preparedStatement4.executeQuery();
+
+                            }catch(SQLException e){
+                                e.printStackTrace();
+
+                            }
+                        
+                        }
+                        if(roombooked){
+                            break;
+                        }
+                        
+                        
+                    }
+                
                 }
+                
                 if(roombooked){
                     break;
                 }

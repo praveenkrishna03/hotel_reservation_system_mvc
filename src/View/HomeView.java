@@ -1123,31 +1123,42 @@ public class HomeView extends javax.swing.JFrame {
         
         java.sql.Date start_date = new java.sql.Date(start.getTime());
         java.sql.Date end_date = new java.sql.Date(end.getTime());
+        java.sql.Date current_date = new java.sql.Date(System.currentTimeMillis());
+
         
-        ResultSet result = bookingController.BookRooms(cust_id, room_type, start_date, end_date);
-        if(result!=null){
-            try {
-                while (result.next()) {
+        if (start_date.compareTo(current_date) >= 0) {
+            if (start_date.compareTo(end_date) <= 0) {
+                ResultSet result = bookingController.BookRooms(cust_id, room_type, start_date, end_date);
+                if(result!=null){
+                    try {
+                        while (result.next()) {
 
-                    int BillNo = result.getInt("bill_id");
-                    int roomNo = result.getInt("room_no");
-                    String roomType = result.getString("room_type");
-                    Date startDate = result.getDate("start_date");
-                    Date endDate = result.getDate("end_date");
-                    String totalAmount = result.getString("Total_amount");
-                    JOptionPane.showMessageDialog(null, "Room No : "+roomNo+"\nRoom Type : "+roomType+"\nStart Date : "+startDate+"\nEnd Date : "+endDate+"\nAmount : "+totalAmount, "Room Booked", JOptionPane.INFORMATION_MESSAGE);
+                            int BillNo = result.getInt("bill_id");
+                            int roomNo = result.getInt("room_no");
+                            String roomType = result.getString("room_type");
+                            Date startDate = result.getDate("start_date");
+                            Date endDate = result.getDate("end_date");
+                            String totalAmount = result.getString("Total_amount");
+                            JOptionPane.showMessageDialog(null, "Room No : "+roomNo+"\nRoom Type : "+roomType+"\nStart Date : "+startDate+"\nEnd Date : "+endDate+"\nAmount : "+totalAmount, "Room Booked", JOptionPane.INFORMATION_MESSAGE);
 
 
+                        }
+                    } catch (SQLException ex) {
+                        Logger.getLogger(HomeView.class.getName()).log(Level.SEVERE, null, ex);
+
+                    }
+
+                }else{
+                    JOptionPane.showMessageDialog(null, "Room not available", "Room Not Booked", JOptionPane.INFORMATION_MESSAGE);
                 }
-            } catch (SQLException ex) {
-                Logger.getLogger(HomeView.class.getName()).log(Level.SEVERE, null, ex);
-                
+            } else {
+        // Show an error message if start_date is greater than end_date
+                JOptionPane.showMessageDialog(null, "Start date must be less than or equal to end date", "Invalid Date Range", JOptionPane.ERROR_MESSAGE);
             }
-        
-        }else{
-            JOptionPane.showMessageDialog(null, "Room not available", "Room Not Booked", JOptionPane.INFORMATION_MESSAGE);
+        } else {
+    // Show an error message if start_date is earlier than the current date
+            JOptionPane.showMessageDialog(null, "Start date must be greater than or equal to the current date", "Invalid Start Date", JOptionPane.ERROR_MESSAGE);
         }
-        
         
         
         
