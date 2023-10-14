@@ -10,7 +10,9 @@ import java.awt.CardLayout;
 import static java.awt.Frame.MAXIMIZED_BOTH;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Arrays;
 import java.util.Date;
+import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -23,15 +25,19 @@ public class AdminView extends javax.swing.JFrame {
             DefaultTableModel requestHandleBookingsModel;
             DefaultTableModel paymentHandleBookingsModel;
             DefaultTableModel BookingsModel;
+            public String[] credentials_for_refresh;
             
             private BookingController bookingController;
+            private AdminView adminview;
+            
     /**
      * Creates new form HomeView
      */
     public AdminView(String[] credentials) {
         name=credentials[0];
-
+        
         worker_id=credentials[1];
+        credentials_for_refresh=credentials;
         initComponents();
         bookingController = new BookingController();
         initializeTables();
@@ -43,11 +49,11 @@ public class AdminView extends javax.swing.JFrame {
         BookingsModel = new DefaultTableModel();
         paymentHandleBookingsModel = new DefaultTableModel(){
             Class[] types = new Class [] {
-               java.lang.String.class, java.lang.Object.class, java.lang.Boolean.class,  java.lang.Object.class
+               java.lang.String.class, java.lang.Object.class,java.lang.String.class, java.lang.Boolean.class,  java.lang.Object.class
             };
             
            boolean[] canEdit = new boolean [] {
-                false,false, false, true, false, false, false, false
+                false,false, false, true, false
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -112,12 +118,145 @@ public class AdminView extends javax.swing.JFrame {
         
         paymentHandleBookingsModel.addColumn("Type");
         paymentHandleBookingsModel.addColumn("Bill No");
+        paymentHandleBookingsModel.addColumn("User");
         paymentHandleBookingsModel.addColumn("Generate Bill");
         paymentHandleBookingsModel.addColumn("Amount");
         
         
-        jTable2.setModel(BookingsModel); // Set the model for jTable2
+        try{
+            while (unpaidBookingsModelResult_admin[0].next()) {
+                int BillNo = unpaidBookingsModelResult_admin[0].getInt("bill_id");
+                int user =  unpaidBookingsModelResult_admin[0].getInt("user");
+                //int roomNo = unpaidBookingsModelResult_admin[0].getInt("room_no");
+               
+                //String roomType = unpaidBookingsModelResult_admin[0].getString("room_type");
+                //Date startDate = unpaidBookingsModelResult_admin[0].getDate("start_date");
+                //Date endDate = unpaidBookingsModelResult_admin[0].getDate("end_date");
+                String totalAmount = unpaidBookingsModelResult_admin[0].getString("Total_amount");
+
+                // Add a row to the table model
+                paymentHandleBookingsModel.addRow(new Object[]{"Room",BillNo ,user,false, totalAmount});
+            }
+
+            // Close result set and prepared statement
+            unpaidBookingsModelResult_admin[0].close();
+       }catch(SQLException ex) {
+            //model.addRow(new Object[]{null, null, "No data", null, null, null});
+            // Handle exceptions
+            ex.printStackTrace();
+        }
+        
+        try{
+            while (unpaidBookingsModelResult_admin[1].next()) {
+                int BillNo = unpaidBookingsModelResult_admin[1].getInt("food_bill_id");
+                //int roomNo = unpaidBookingsModelResult_admin[0].getInt("room_no");
+                int user=unpaidBookingsModelResult_admin[1].getInt("user_id");
+               
+                //String roomType = unpaidBookingsModelResult_admin[0].getString("room_type");
+                //Date startDate = unpaidBookingsModelResult_admin[0].getDate("start_date");
+                //Date endDate = unpaidBookingsModelResult_admin[0].getDate("end_date");
+                String totalAmount = unpaidBookingsModelResult_admin[1].getString("amount");
+
+                // Add a row to the table model
+                paymentHandleBookingsModel.addRow(new Object[]{"Food",BillNo,user ,false, totalAmount});
+            }
+
+            // Close result set and prepared statement
+            unpaidBookingsModelResult_admin[1].close();
+       }catch(SQLException ex) {
+            //model.addRow(new Object[]{null, null, "No data", null, null, null});
+            // Handle exceptions
+            ex.printStackTrace();
+        }
+        
+        
+        try{
+            while (unpaidBookingsModelResult_admin[2].next()) {
+                int BillNo = unpaidBookingsModelResult_admin[2].getInt("travel_bill_id");
+                //int roomNo = unpaidBookingsModelResult_admin[0].getInt("room_no");
+               int user=unpaidBookingsModelResult_admin[2].getInt("c_id");
+                //String roomType = unpaidBookingsModelResult_admin[0].getString("room_type");
+                //Date startDate = unpaidBookingsModelResult_admin[0].getDate("start_date");
+                //Date endDate = unpaidBookingsModelResult_admin[0].getDate("end_date");
+                String totalAmount = unpaidBookingsModelResult_admin[2].getString("amount");
+
+                // Add a row to the table model
+                paymentHandleBookingsModel.addRow(new Object[]{"Travel",BillNo ,user,false, totalAmount});
+            }
+
+            // Close result set and prepared statement
+            unpaidBookingsModelResult_admin[2].close();
+       }catch(SQLException ex) {
+            //model.addRow(new Object[]{null, null, "No data", null, null, null});
+            // Handle exceptions
+            ex.printStackTrace();
+        }
+        
+        
+        try{
+            while (unpaidBookingsModelResult_admin[3].next()) {
+                int BillNo = unpaidBookingsModelResult_admin[3].getInt("event_id");
+                //int roomNo = unpaidBookingsModelResult_admin[0].getInt("room_no");
+                int user=unpaidBookingsModelResult_admin[3].getInt("cust_id");
+                //String roomType = unpaidBookingsModelResult_admin[0].getString("room_type");
+                //Date startDate = unpaidBookingsModelResult_admin[0].getDate("start_date");
+                //Date endDate = unpaidBookingsModelResult_admin[0].getDate("end_date");
+                String totalAmount = unpaidBookingsModelResult_admin[3].getString("amount");
+
+                // Add a row to the table model
+                paymentHandleBookingsModel.addRow(new Object[]{"Event",BillNo ,user,false, totalAmount});
+            }
+
+            // Close result set and prepared statement
+            unpaidBookingsModelResult_admin[3].close();
+       }catch(SQLException ex) {
+            //model.addRow(new Object[]{null, null, "No data", null, null, null});
+            // Handle exceptions
+            ex.printStackTrace();
+        }
+        
+        
+        jTable2.setModel(BookingsModel);
+        jTable1.setModel(paymentHandleBookingsModel);// Set the model for jTable2
             
+    }
+    
+    
+    public String[] getFirstColumnValuesForTrueBoolean() {
+    int rowCount = paymentHandleBookingsModel.getRowCount();
+    String[] values = new String[rowCount];
+    int i=0;
+    for (int row = 0; row < rowCount; row++) {
+        Boolean isTrue = (Boolean) paymentHandleBookingsModel.getValueAt(row, 3); // Check the third column (index 2)
+        Object firstColumnValue = paymentHandleBookingsModel.getValueAt(row, 0);
+        if (isTrue) {
+           values[i] = (String) firstColumnValue;
+
+            i++;
+        }
+    }
+    
+    // Trim the values array to remove any unused elements
+    return Arrays.copyOf(values, i);
+    }
+    
+    
+    public int[] getSecondColumnValuesForTrueBoolean() {
+    int rowCount = paymentHandleBookingsModel.getRowCount();
+    int[] values = new int[rowCount];
+    int i=0;
+    for (int row = 0; row < rowCount; row++) {
+        Boolean isTrue = (Boolean) paymentHandleBookingsModel.getValueAt(row, 3); // Check the third column (index 2)
+        Object firstColumnValue = paymentHandleBookingsModel.getValueAt(row, 1);
+        if (isTrue) {
+            values[i] = (int) firstColumnValue;
+
+            i++;
+        }
+    }
+    
+    // Trim the values array to remove any unused elements
+    return Arrays.copyOf(values, i);
     }
 
     /**
@@ -132,6 +271,9 @@ public class AdminView extends javax.swing.JFrame {
         jPanel1 = new javax.swing.JPanel();
         jButton1 = new javax.swing.JButton();
         jButton6 = new javax.swing.JButton();
+        jButton7 = new javax.swing.JButton();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        jTable1 = new javax.swing.JTable();
         jScrollPane2 = new javax.swing.JScrollPane();
         jTable2 = new javax.swing.JTable();
         jLabel1 = new javax.swing.JLabel();
@@ -145,6 +287,7 @@ public class AdminView extends javax.swing.JFrame {
         jPanel6 = new javax.swing.JPanel();
         jLabel6 = new javax.swing.JLabel();
         jButton11 = new javax.swing.JButton();
+        jButton2 = new javax.swing.JButton();
         
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setExtendedState(MAXIMIZED_BOTH);
@@ -160,7 +303,15 @@ public class AdminView extends javax.swing.JFrame {
         });
         jPanel1.add(jButton1);
         jButton1.setBounds(300, 170, 180, 70);
-
+        
+        jButton7.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/back.png")));
+        jButton7.setBounds(1400, 10, 50, 50);
+        jPanel1.add(jButton7);
+        jButton7.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jButton7MouseClicked(evt);
+            }
+        });
         
         jPanel1.add(jButton6);
         jButton6.setText("Accept Payments");
@@ -246,6 +397,25 @@ public class AdminView extends javax.swing.JFrame {
         jPanel6.add(jLabel6);
         jLabel6.setBounds(600, 10, 400, 80);
         
+        jTable1.setUpdateSelectionOnSort(false);
+        jTable1.setVerifyInputWhenFocusTarget(false);
+        jScrollPane1.setViewportView(jTable1);
+        jTable1.setRowHeight(60);
+
+        jPanel6.add(jScrollPane1);
+        jScrollPane1.setBounds(40, 100, 1470, 550);
+        
+        jButton2.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        jButton2.setText("Accept Payment");
+        jButton2.setBounds(700, 700, 200, 30);
+        jPanel6.add(jButton2);
+        
+        jButton2.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jButton2MouseClicked(evt);
+            }
+        });
+        
         jLabel6.setFont(new java.awt.Font("Segoe UI", 0, 48)); // NOI18N
         jLabel6.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         //jLabel2.setText("Book Room");
@@ -283,7 +453,19 @@ public class AdminView extends javax.swing.JFrame {
     private void jPanel3MouseClicked(java.awt.event.MouseEvent evt) {                                     
         // TODO add your handling code here:
                 
-    }                                    
+    }    
+    
+    public void jButton2MouseClicked(java.awt.event.MouseEvent evt) {
+        int[] bill_no_s = getSecondColumnValuesForTrueBoolean();
+        String[] type_s = getFirstColumnValuesForTrueBoolean();
+        
+        boolean done=bookingController.acceptPayments(bill_no_s,type_s);
+        if(done){
+            JOptionPane.showMessageDialog(null, "Payment Accepted", "Accepted", JOptionPane.INFORMATION_MESSAGE);
+        }else{
+            JOptionPane.showMessageDialog(null, "Payment Not Accepted", "Not Accepted", JOptionPane.ERROR_MESSAGE);
+        }
+    }
 
                                          
 
@@ -296,8 +478,9 @@ public class AdminView extends javax.swing.JFrame {
 
     private void jButton7MouseClicked(java.awt.event.MouseEvent evt) {                                      
         // TODO add your handling code here:
-        CardLayout cardLayout = (CardLayout) getContentPane().getLayout();
-        cardLayout.show(getContentPane(), "home");
+                    adminview = new AdminView(credentials_for_refresh);
+                    adminview.setVisible(true);
+                    this.dispose();
         
     }                                     
 
@@ -365,6 +548,8 @@ public class AdminView extends javax.swing.JFrame {
     private javax.swing.JButton jButton11;
     private javax.swing.JButton jButton6;
     private javax.swing.JButton jButton8;
+    private javax.swing.JButton jButton7;
+    private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
@@ -376,7 +561,9 @@ public class AdminView extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel6;
     private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable jTable2;
+    private javax.swing.JTable jTable1;
     
     // End of variables declaration                   
 }

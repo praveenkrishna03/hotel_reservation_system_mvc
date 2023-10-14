@@ -67,6 +67,8 @@ public class HomeView extends javax.swing.JFrame {
         bookingController = new BookingController();
         initializeTables();
     }
+
+   
     
     
 //         public DefaultTableModel previousBookingsModel;

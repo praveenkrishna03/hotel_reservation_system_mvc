@@ -102,7 +102,7 @@ public class BookingController {
             PreparedStatement preparedStatement2 = con.prepareStatement(query2);
             result[2] = preparedStatement2.executeQuery();
             
-            String query3 = "SELECT * FROM events WHERE AND paid = 0";
+            String query3 = "SELECT * FROM events WHERE paid = 0";
             PreparedStatement preparedStatement3 = con.prepareStatement(query3);
             result[3] = preparedStatement3.executeQuery();
             //preparedStatement.close();
@@ -418,6 +418,60 @@ public class BookingController {
     
     
     }
+    
+    public boolean acceptPayments(int[] bill_s,String[] type_s){
+    
+        try {
+            
+            Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/hotel_reservation","root","praveenkrishna2003");
+            // Prepare the SQL statement
+            
+            for (int i=0;i<bill_s.length;i++) {
+                // Set the bill_id value
+                System.out.println(bill_s[i]);
+                if(type_s[i]=="Room"){
+                    String Query2 = "UPDATE bookings SET paid = true WHERE bill_id = "+bill_s[i];
+                    PreparedStatement preparedStatement2 = con.prepareStatement(Query2);
+                    //preparedStatement1.setInt(1, bill_s[i]);
+                    preparedStatement2.executeUpdate();
+                    preparedStatement2.close();
+                }else if(type_s[i]=="Travel"){
+                    String Query3 = "UPDATE travel SET paid = true WHERE travel_bill_id = "+bill_s[i];
+                    PreparedStatement preparedStatement3 = con.prepareStatement(Query3);
+                    //preparedStatement1.setInt(1, bill_s[i]);
+                    preparedStatement3.executeUpdate();
+                    preparedStatement3.close();
+                }else if(type_s[i]=="Food"){
+                    String Query4 = "UPDATE food SET paid = true WHERE food_bill_id = "+bill_s[i];
+                    PreparedStatement preparedStatement4 = con.prepareStatement(Query4);
+                    //preparedStatement1.setInt(1, bill_s[i]);
+                    preparedStatement4.executeUpdate();
+                    preparedStatement4.close();
+                }
+                else if(type_s[i]=="Event"){
+                    String Query1 = "UPDATE events SET paid = true WHERE event_id = "+bill_s[i];
+                    PreparedStatement preparedStatement1 = con.prepareStatement(Query1);
+                    //preparedStatement1.setInt(1, bill_s[i]);
+                    preparedStatement1.executeUpdate();
+                    preparedStatement1.close();
+                
+                }
+            }
+
+            // Close the prepared statement
+            
+            return true;
+
+        } catch (SQLException ex) {
+            // Handle any exceptions
+            ex.printStackTrace();
+            return false;
+        }
+        
+ 
+    }
+    
+    
     
     public boolean cancelRequestsSend( int[] billIds) {
     // Define the SQL query for inserting into the cancel_request table
