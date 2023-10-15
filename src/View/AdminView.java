@@ -358,8 +358,8 @@ public class AdminView extends javax.swing.JFrame {
         jPanel1.add(jButton1);
         jButton1.setBounds(300, 170, 180, 70);
         
-        jButton7.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/back.png")));
-        jButton7.setBounds(1400, 10, 50, 50);
+        jButton7.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/refresh.png")));
+        jButton7.setBounds(1300, 10, 100, 100);
         jPanel1.add(jButton7);
         jButton7.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {

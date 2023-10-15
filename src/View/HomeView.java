@@ -538,12 +538,12 @@ public class HomeView extends javax.swing.JFrame {
         jLabel8.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
         jLabel8.setText(customer_id);
         jPanel1.add(jLabel8);
-        jLabel8.setBounds(230, 80, 100, 40);
+        jLabel8.setBounds(300, 80, 100, 40);
 
         jLabel9.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
         jLabel9.setText("Customer ID    :");
         jPanel1.add(jLabel9);
-        jLabel9.setBounds(50, 80, 190, 40);
+        jLabel9.setBounds(120, 80, 190, 40);
 
         jLabel10.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
         jLabel10.setText("Name    :");
@@ -578,8 +578,8 @@ public class HomeView extends javax.swing.JFrame {
 
         jButton20.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/logout.png"))); // NOI18N
         jButton20.setText("Logout");
-        jButton21.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/back.png")));
-        jButton21.setBounds(10, 10, 50, 50);
+        jButton21.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/refresh.png")));
+        jButton21.setBounds(10, 10, 100, 100);
         jButton20.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         jButton20.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
         jButton20.setIconTextGap(0);
