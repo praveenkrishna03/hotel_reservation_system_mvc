@@ -558,19 +558,25 @@ public class BookingController {
     
     
         String deleteQuery = "DELETE FROM bookings WHERE bill_id = ?";
+        String deleteQuery2 = "DELETE FROM cancel_request WHERE bill_id = ?";
 
     try {
         Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/hotel_reservation","root","praveenkrishna2003");
         // Prepare the SQL statement
+        PreparedStatement preparedStatement2 = con.prepareStatement(deleteQuery2);
         PreparedStatement preparedStatement = con.prepareStatement(deleteQuery);
 
         // Loop through the bill numbers and delete rows
         for (int billNumber : bill_s) {
+            preparedStatement2.setInt(1, billNumber);
+            preparedStatement2.executeUpdate();
+            
             preparedStatement.setInt(1, billNumber);
             preparedStatement.executeUpdate();
         }
 
         // Close the prepared statement
+        preparedStatement2.close();
         preparedStatement.close();
         return true;
     } catch (SQLException ex) {

@@ -291,6 +291,24 @@ public class AdminView extends javax.swing.JFrame {
     // Trim the values array to remove any unused elements
     return Arrays.copyOf(values, i);
     }
+    
+    public int[] getThirdColumnValuesForTrueBoolean() {
+    int rowCount = requestHandleBookingsModel.getRowCount();
+    int[] values = new int[rowCount];
+    int i=0;
+    for (int row = 0; row < rowCount; row++) {
+        Boolean isTrue = (Boolean) requestHandleBookingsModel.getValueAt(row, 2); // Check the third column (index 2)
+        Object firstColumnValue = requestHandleBookingsModel.getValueAt(row, 0);
+        if (isTrue) {
+            values[i] = (int) firstColumnValue;
+
+            i++;
+        }
+    }
+    
+    // Trim the values array to remove any unused elements
+    return Arrays.copyOf(values, i);
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -323,6 +341,7 @@ public class AdminView extends javax.swing.JFrame {
         jLabel6 = new javax.swing.JLabel();
         jButton11 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
+        jButton3 = new javax.swing.JButton();
         
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setExtendedState(MAXIMIZED_BOTH);
@@ -408,6 +427,17 @@ public class AdminView extends javax.swing.JFrame {
         jLabel3.setBounds(600, 10, 400, 80);
         jLabel3.setFont(new java.awt.Font("Segoe UI", 0, 48)); // NOI18N
         jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        
+        jButton3.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        jButton3.setText("Accept Payment");
+        jButton3.setBounds(700, 700, 200, 30);
+        jPanel3.add(jButton3);
+        
+        jButton3.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jButton3MouseClicked(evt);
+            }
+        });
 
         jButton8.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/back.png"))); // NOI18N
         jButton8.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -510,6 +540,20 @@ public class AdminView extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(null, "Payment Not Accepted", "Not Accepted", JOptionPane.ERROR_MESSAGE);
         }
     }
+    
+    public void jButton3MouseClicked(java.awt.event.MouseEvent evt) {
+        int[] bill_no_s = getThirdColumnValuesForTrueBoolean();
+        //String[] type_s = getFirstColumnValuesForTrueBoolean();
+        
+        boolean done=bookingController.cancelRequestsHandle(bill_no_s);
+        if(done){
+            JOptionPane.showMessageDialog(null, "Cacnel Accepted", "Accepted", JOptionPane.INFORMATION_MESSAGE);
+        }else{
+            JOptionPane.showMessageDialog(null, "Cancel Not Accepted", "Not Accepted", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+    
+    
 
                                          
 
@@ -594,6 +638,7 @@ public class AdminView extends javax.swing.JFrame {
     private javax.swing.JButton jButton8;
     private javax.swing.JButton jButton7;
     private javax.swing.JButton jButton2;
+    private javax.swing.JButton jButton3;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
