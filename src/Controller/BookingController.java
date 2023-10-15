@@ -4,9 +4,11 @@
  */
 package Controller;
 
+import java.awt.List;
 import java.sql.*;
 import java.lang.*;
 import java.sql.Date;
+import java.util.ArrayList;
 
 
 /**
@@ -499,6 +501,83 @@ public class BookingController {
             ex.printStackTrace();
             return false;
         }
+    }
+    
+    public ResultSet getCancelRequests() {
+    ResultSet result = null;
+    try {
+        Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/hotel_reservation", "root", "praveenkrishna2003");
+        String query = "SELECT * FROM cancel_request";
+        PreparedStatement preparedStatement = con.prepareStatement(query);
+        ResultSet cancelRequestResultSet = preparedStatement.executeQuery();
+        PreparedStatement preparedStatement1 = con.prepareStatement(query);
+        ResultSet cancelRequestResultSet2 = preparedStatement1.executeQuery();
+        
+
+        int rowCount = 0;
+        while (cancelRequestResultSet.next()) {
+            rowCount++;
+        }
+        System.out.println(rowCount);
+        
+        int[] bill_s = new int[rowCount]; // Create an array to store the bill_ids
+        int i = 0;
+        //cancelRequestResultSet.beforeFirst();
+        while (cancelRequestResultSet2.next()) {
+            bill_s[i] = cancelRequestResultSet2.getInt("bill_id");
+            System.out.println(cancelRequestResultSet2.getInt("bill_id"));
+            i++;
+        }
+        
+        
+
+        // Create a SQL query to select bookings with bill_ids from the cancel request
+        StringBuilder bookingQuery = new StringBuilder("SELECT * FROM bookings WHERE bill_id IN (");
+        for (int j = 0; j < bill_s.length; j++) {
+            if (j > 0) {
+                bookingQuery.append(",");
+            }
+            bookingQuery.append(bill_s[j]);
+        }
+        bookingQuery.append(")");
+
+        PreparedStatement bookingStatement = con.prepareStatement(bookingQuery.toString());
+        result = bookingStatement.executeQuery();
+        System.out.println(bookingQuery.toString());
+    } catch (SQLException ex) {
+        // Handle exceptions
+        ex.printStackTrace();
+    }
+    
+    return result;
+}
+
+    
+    public boolean cancelRequestsHandle( int[] bill_s) {
+    // Define the SQL query for inserting into the cancel_request table
+    
+    
+        String deleteQuery = "DELETE FROM bookings WHERE bill_id = ?";
+
+    try {
+        Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/hotel_reservation","root","praveenkrishna2003");
+        // Prepare the SQL statement
+        PreparedStatement preparedStatement = con.prepareStatement(deleteQuery);
+
+        // Loop through the bill numbers and delete rows
+        for (int billNumber : bill_s) {
+            preparedStatement.setInt(1, billNumber);
+            preparedStatement.executeUpdate();
+        }
+
+        // Close the prepared statement
+        preparedStatement.close();
+        return true;
+    } catch (SQLException ex) {
+        // Handle any exceptions
+        ex.printStackTrace();
+        return false;
+    }
     }
     
     public void deleteBookingsByBillNumbers( int[] billNumbers) {

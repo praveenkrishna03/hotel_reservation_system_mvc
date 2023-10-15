@@ -66,11 +66,11 @@ public class AdminView extends javax.swing.JFrame {
         };
         requestHandleBookingsModel = new DefaultTableModel(){
             Class[] types = new Class [] {
-                java.lang.String.class,java.lang.Object.class, java.lang.Boolean.class, java.lang.Object.class,java.lang.Object.class,java.lang.Object.class,java.lang.Object.class,java.lang.Object.class
+                java.lang.Object.class,java.lang.Object.class, java.lang.Boolean.class, java.lang.Object.class
             };
             
            boolean[] canEdit = new boolean [] {
-                false,false, true, false, false, false, false, false
+                false,false, true, false
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -93,7 +93,7 @@ public class AdminView extends javax.swing.JFrame {
         
         ResultSet BookingsModelResult = bookingController.getBookings();
         ResultSet[] unpaidBookingsModelResult_admin = bookingController.getUnpaidBookings_admin();
-        
+        ResultSet cacnelunpaidBookingsModelResult_admin = bookingController.getCancelRequests();
         try{
             while (BookingsModelResult.next()) {
                 int user=BookingsModelResult.getInt("user");
@@ -121,6 +121,38 @@ public class AdminView extends javax.swing.JFrame {
         paymentHandleBookingsModel.addColumn("User");
         paymentHandleBookingsModel.addColumn("Generate Bill");
         paymentHandleBookingsModel.addColumn("Amount");
+        
+        
+        
+        requestHandleBookingsModel.addColumn("Bill No");
+        requestHandleBookingsModel.addColumn("User");
+        requestHandleBookingsModel.addColumn("Accept");
+        requestHandleBookingsModel.addColumn("Amount");
+        
+        
+        try{
+            while (cacnelunpaidBookingsModelResult_admin.next()) {
+                int BillNo = cacnelunpaidBookingsModelResult_admin.getInt("bill_id");
+                int user =  cacnelunpaidBookingsModelResult_admin.getInt("user");
+                //int roomNo = unpaidBookingsModelResult_admin[0].getInt("room_no");
+               
+                //String roomType = unpaidBookingsModelResult_admin[0].getString("room_type");
+                //Date startDate = unpaidBookingsModelResult_admin[0].getDate("start_date");
+                //Date endDate = unpaidBookingsModelResult_admin[0].getDate("end_date");
+                String totalAmount = cacnelunpaidBookingsModelResult_admin.getString("Total_amount");
+
+                // Add a row to the table model
+                requestHandleBookingsModel.addRow(new Object[]{BillNo ,user,false, totalAmount});
+                System.out.println("set");
+            }
+
+            // Close result set and prepared statement
+            cacnelunpaidBookingsModelResult_admin.close();
+       }catch(SQLException ex) {
+            //model.addRow(new Object[]{null, null, "No data", null, null, null});
+            // Handle exceptions
+            ex.printStackTrace();
+        }
         
         
         try{
@@ -218,6 +250,7 @@ public class AdminView extends javax.swing.JFrame {
         
         jTable2.setModel(BookingsModel);
         jTable1.setModel(paymentHandleBookingsModel);// Set the model for jTable2
+        jTable3.setModel(requestHandleBookingsModel);// Set the model for jTable2
             
     }
     
@@ -275,7 +308,9 @@ public class AdminView extends javax.swing.JFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
         jScrollPane2 = new javax.swing.JScrollPane();
+        jScrollPane3 = new javax.swing.JScrollPane();
         jTable2 = new javax.swing.JTable();
+        jTable3 = new javax.swing.JTable();
         jLabel1 = new javax.swing.JLabel();
         jLabel10 = new javax.swing.JLabel();
         jLabel11 = new javax.swing.JLabel();
@@ -387,6 +422,15 @@ public class AdminView extends javax.swing.JFrame {
         });
         jPanel3.add(jButton8);
         jButton8.setBounds(10, 10, 50, 50);
+        
+        jTable3.setUpdateSelectionOnSort(false);
+        jTable3.setVerifyInputWhenFocusTarget(false);
+        jScrollPane3.setViewportView(jTable3);
+        jTable3.setRowHeight(60);
+        
+        
+        jPanel3.add(jScrollPane3);
+        jScrollPane3.setBounds(40, 100, 1470, 550);
 
         getContentPane().add(jPanel3, "Cancel Room");
 
@@ -561,9 +605,11 @@ public class AdminView extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel6;
     private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable jTable2;
     private javax.swing.JTable jTable1;
+    private javax.swing.JTable jTable3;
     
     // End of variables declaration                   
 }
