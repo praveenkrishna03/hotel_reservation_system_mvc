@@ -308,7 +308,7 @@ public class SignUpView extends javax.swing.JFrame {
                 JOptionPane.showMessageDialog(this, "Wrong Username or Password");
             }
         }else{
-            int userID = Integer.parseInt(jTextField6.getText());
+            String userID =jTextField6.getText();
             String password = new String(jPasswordField3.getPassword());
             String[] credentialsCheckSuccessful = controller.checkUserCredentials(userID, password);
             if (credentialsCheckSuccessful!=null) {

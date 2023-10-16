@@ -81,7 +81,7 @@ public class HomeView extends javax.swing.JFrame {
             };
             
            boolean[] canEdit = new boolean [] {
-                false,false, false, true, false, false, false, false
+                false,false, true, false
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -1309,7 +1309,7 @@ public class HomeView extends javax.swing.JFrame {
 
         
         if (start_date.compareTo(current_date) >= 0) {
-            if (start_date.compareTo(end_date) <= 0) {
+            if (start_date.compareTo(end_date) < 0) {
                 ResultSet result = bookingController.BookRooms(cust_id, room_type, start_date, end_date);
                 if(result!=null){
                     try {
@@ -1335,7 +1335,7 @@ public class HomeView extends javax.swing.JFrame {
                 }
             } else {
         // Show an error message if start_date is greater than end_date
-                JOptionPane.showMessageDialog(null, "Start date must be less than or equal to end date", "Invalid Date Range", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(null, "Start date must be less than end date", "Invalid Date Range", JOptionPane.ERROR_MESSAGE);
             }
         } else {
     // Show an error message if start_date is earlier than the current date
@@ -1379,7 +1379,7 @@ public class HomeView extends javax.swing.JFrame {
 
         
         if (start_date.compareTo(current_date) >= 0) {
-            if (start_date.compareTo(end_date) <= 0) {
+            if (start_date.compareTo(end_date) < 0) {
                 ResultSet result = bookingController.BookEvents(cust_id, room_type, start_date, end_date);
                 if(result!=null){
                     try {
@@ -1405,7 +1405,7 @@ public class HomeView extends javax.swing.JFrame {
                 }
             } else {
         // Show an error message if start_date is greater than end_date
-                JOptionPane.showMessageDialog(null, "Start date must be less than or equal to end date", "Invalid Date Range", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(null, "Start date must be less than end date", "Invalid Date Range", JOptionPane.ERROR_MESSAGE);
             }
         } else {
     // Show an error message if start_date is earlier than the current date
@@ -1441,10 +1441,10 @@ public class HomeView extends javax.swing.JFrame {
         int no_of_days = Integer.parseInt(days);
         
         
-        boolean done=bookingController.BookFoods(cust_id, no_of_days, breakfast, lunch, snacks, dinner);
+        int done=bookingController.BookFoods(cust_id, no_of_days, breakfast, lunch, snacks, dinner);
         
-        if(done){
-            JOptionPane.showMessageDialog(null, "Food Booking successful", "Booked", JOptionPane.INFORMATION_MESSAGE);
+        if(done!=0){
+            JOptionPane.showMessageDialog(null, "Food Booking successful\nAmount : "+done, "Booked", JOptionPane.INFORMATION_MESSAGE);
 
         }
         else{
@@ -1464,10 +1464,10 @@ public class HomeView extends javax.swing.JFrame {
         int no_of_days = Integer.parseInt(days);
         
         
-        boolean done=bookingController.BookTransport(cust_id, no_of_days, bus, car, van, jeep);
+        int done=bookingController.BookTransport(cust_id, no_of_days, bus, car, van, jeep);
         
-        if(done){
-            JOptionPane.showMessageDialog(null, "Transportation Booking successful", "Booked", JOptionPane.INFORMATION_MESSAGE);
+        if(done!=0){
+            JOptionPane.showMessageDialog(null, "Transportation Booking successful\nAmount : "+done, "Booked", JOptionPane.INFORMATION_MESSAGE);
 
         }
         else{

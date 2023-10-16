@@ -326,6 +326,7 @@ public class AdminView extends javax.swing.JFrame {
         jButton1 = new javax.swing.JButton();
         jButton6 = new javax.swing.JButton();
         jButton7 = new javax.swing.JButton();
+        jButton10 = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
         jScrollPane2 = new javax.swing.JScrollPane();
@@ -358,11 +359,26 @@ public class AdminView extends javax.swing.JFrame {
                 jButton1MouseClicked(evt);
             }
         });
+        
+        jButton10.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/logout.png"))); // NOI18N
+        jButton10.setText("Logout");
+        jButton10.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        jButton10.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
+        jButton10.setIconTextGap(0);
+        jButton10.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jButton10MouseClicked(evt);
+            }
+        });
+        
+        jPanel1.add(jButton10);
+        jButton10.setBounds(1350, 20, 150, 50);
+        
         jPanel1.add(jButton1);
         jButton1.setBounds(300, 170, 180, 70);
         
         jButton7.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/refresh.png")));
-        jButton7.setBounds(1300, 10, 100, 100);
+        jButton7.setBounds(1000, 10, 100, 100);
         jPanel1.add(jButton7);
         jButton7.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -597,13 +613,11 @@ public class AdminView extends javax.swing.JFrame {
 
     private void jButton10MouseClicked(java.awt.event.MouseEvent evt) {                                       
         // TODO add your handling code here:
-        CardLayout cardLayout = (CardLayout) getContentPane().getLayout();
-        cardLayout.show(getContentPane(), "home");
+                        SignUpView SignUpView = new SignUpView();
+                        SignUpView.setVisible(true);
+                        this.dispose();
     }                                      
 
-    private void jButton10ActionPerformed(java.awt.event.ActionEvent evt) {                                          
-        // TODO add your handling code here:
-    }                                         
 
     private void jButton11MouseClicked(java.awt.event.MouseEvent evt) {                                       
         // TODO add your handling code here:
@@ -642,6 +656,8 @@ public class AdminView extends javax.swing.JFrame {
     private javax.swing.JButton jButton7;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
+    private javax.swing.JButton jButton10;
+    
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;

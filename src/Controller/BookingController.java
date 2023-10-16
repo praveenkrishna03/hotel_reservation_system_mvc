@@ -273,6 +273,9 @@ public class BookingController {
         int room_cap;
         boolean room_availability;
         int amount=0;
+        LocalDate localDate1 = start_date.toLocalDate();
+        LocalDate localDate2 = end_date.toLocalDate();
+        int daysBetween = (int) ChronoUnit.DAYS.between(localDate1, localDate2);
         try {
             Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/hotel_reservation","root","praveenkrishna2003");
             String query = "SELECT * FROM hotel_rooms WHERE room_type="+room_type;
@@ -294,7 +297,24 @@ public class BookingController {
                         preparedStatement1.setDate(3,end_date);
                         preparedStatement1.setInt(4,(room_type-5)*25);
                         preparedStatement1.setInt(5,room_no);
-                        preparedStatement1.setInt(6,amount);
+                        //preparedStatement1.setInt(6,amount);
+                        if(room_type==6){
+                            preparedStatement1.setInt(6,300*25*daysBetween);
+                        }else if(room_type==7){
+                            preparedStatement1.setInt(6,300*50*daysBetween);
+                        }
+                        else if(room_type==8){
+                            preparedStatement1.setInt(6,300*75*daysBetween);
+                        }
+                        else if(room_type==9){
+                            preparedStatement1.setInt(6,300*100*daysBetween);
+                        }
+                        else if(room_type==10){
+                            preparedStatement1.setInt(6,300*125*daysBetween);
+                        }else if(room_type==11){
+                            preparedStatement1.setInt(6,300*150*daysBetween);
+                        }
+                        
                         roombooked=true;
                         
                         
@@ -334,7 +354,24 @@ public class BookingController {
                                 preparedStatement2.setDate(3,end_date);
                                 preparedStatement2.setInt(4,(room_type-5)*25);
                                 preparedStatement2.setInt(5,room_no);
-                                preparedStatement2.setInt(6,amount);
+                                //preparedStatement2.setInt(6,amount);
+                                if(room_type==6){
+                            preparedStatement1.setInt(6,300*25*daysBetween);
+                        }else if(room_type==7){
+                            preparedStatement1.setInt(6,300*50*daysBetween);
+                        }
+                        else if(room_type==8){
+                            preparedStatement1.setInt(6,300*75*daysBetween);
+                        }
+                        else if(room_type==9){
+                            preparedStatement1.setInt(6,300*100*daysBetween);
+                        }
+                        else if(room_type==10){
+                            preparedStatement1.setInt(6,300*125*daysBetween);
+                        }else if(room_type==11){
+                            preparedStatement1.setInt(6,300*150*daysBetween);
+                        }
+                        
                                 roombooked=true;
 
 
@@ -382,7 +419,8 @@ public class BookingController {
     return result;
     }
     
-    public boolean BookFoods(int customer_id,int no_of_days,boolean breakfast,boolean lunch,boolean snacks,boolean dinner){
+    public int BookFoods(int customer_id,int no_of_days,boolean breakfast,boolean lunch,boolean snacks,boolean dinner){
+                    int amount=0;
                     try{
                         
                         Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/hotel_reservation","root","praveenkrishna2003");
@@ -397,7 +435,24 @@ public class BookingController {
                         preparedStatement.setBoolean(4,lunch);
                         preparedStatement.setBoolean(5,snacks);
                         preparedStatement.setBoolean(6,dinner);
-                  
+                        
+                        int breakfast_a=0;
+                        int lunch_a=0;
+                        int snacks_a=0;
+                        int dinner_a=0;
+                        if(breakfast){
+                            breakfast_a=no_of_days*100;
+                        }
+                        if(lunch){
+                            lunch_a=no_of_days*150;
+                        }
+                        if(snacks){
+                            snacks_a=no_of_days*50;
+                        }
+                        if(dinner){
+                            dinner_a=no_of_days*100;
+                        }
+                        amount=breakfast_a+lunch_a+snacks_a+dinner_a;
                        
                         
                         
@@ -408,17 +463,18 @@ public class BookingController {
                         //preparedStatement2.setInt(1, room_no); // Set the room_no parameter
                         //int rowsUpdated = preparedStatement2.executeUpdate(); // Use executeUpdate() for non-query statements
                         
-                        return true;
+                        
                     }catch(SQLException e){
                         e.printStackTrace();
-                        return false;
+                       
                     }
-    
+                    return amount;
     
     }
     
     
-    public boolean BookTransport(int customer_id,int no_of_days,int bus,int car,int van,int jeep){
+    public int BookTransport(int customer_id,int no_of_days,int bus,int car,int van,int jeep){
+                    int amount=0;
                     try{
                         
                         Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/hotel_reservation","root","praveenkrishna2003");
@@ -434,6 +490,11 @@ public class BookingController {
                         preparedStatement.setInt(5,car);
                         preparedStatement.setInt(6,jeep);
                   
+                        int car_a=car*2000;
+                        int bus_a=bus*6000;
+                        int van_a=van*5000;
+                        int jeep_a=jeep*4000;
+                        amount=car_a+bus_a+van_a+jeep_a;
                         
                        
                         
@@ -445,11 +506,12 @@ public class BookingController {
                         //preparedStatement2.setInt(1, room_no); // Set the room_no parameter
                         //int rowsUpdated = preparedStatement2.executeUpdate(); // Use executeUpdate() for non-query statements
                         
-                        return true;
+                        
                     }catch(SQLException e){
                         e.printStackTrace();
-                        return false;
+                        
                     }
+                    return amount;
     
     
     }
@@ -625,7 +687,7 @@ public class BookingController {
     
     public void deleteBookingsByBillNumbers( int[] billNumbers) {
     // Define the SQL query with a placeholder for the bill number
-    String deleteQuery = "DELETE FROM bookings WHERE bill_id = ?";
+    String deleteQuery = "UPDATE FROM bookings set paid=1 WHERE bill_id = ?";
 
     try {
         Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/hotel_reservation","root","praveenkrishna2003");

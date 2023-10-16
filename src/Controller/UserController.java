@@ -77,7 +77,7 @@ public class UserController {
         
     }
     
-    public String[] checkUserCredentials(int userId,String password) {
+    public String[] checkUserCredentials(String userId,String password) {
         String[] userDetails=null;
         //boolean status=false;
         try {
@@ -89,7 +89,7 @@ public class UserController {
     String selectSQL = "SELECT * FROM hotel_customers WHERE customer_id = ? AND password = ?";
     PreparedStatement preparedStatement = con.prepareStatement(selectSQL);
     
-    preparedStatement.setInt(1, userId); // Replace "1" with the parameter index as per your table structure
+    preparedStatement.setString(1, userId); // Replace "1" with the parameter index as per your table structure
     preparedStatement.setString(2, password); // Replace "2" with the parameter index as per your table structure
 
     ResultSet result = preparedStatement.executeQuery();
