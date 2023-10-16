@@ -8,6 +8,8 @@ import java.awt.List;
 import java.sql.*;
 import java.lang.*;
 import java.sql.Date;
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 
 
@@ -123,7 +125,11 @@ public class BookingController {
         int room_no;
         int room_cap;
         boolean room_availability;
-        int amount=0;
+        
+        LocalDate localDate1 = start_date.toLocalDate();
+        LocalDate localDate2 = end_date.toLocalDate();
+        int daysBetween = (int) ChronoUnit.DAYS.between(localDate1, localDate2);
+
         try {
             Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/hotel_reservation","root","praveenkrishna2003");
             String query = "SELECT * FROM hotel_rooms WHERE room_type="+room_type;
@@ -143,7 +149,21 @@ public class BookingController {
                         preparedStatement1.setInt(3,room_type);
                         preparedStatement1.setDate(4,start_date);
                         preparedStatement1.setDate(5,end_date);
-                        preparedStatement1.setInt(6,amount);
+                        if(room_type==1){
+                            preparedStatement1.setInt(6,750*daysBetween);
+                        }else if(room_type==2){
+                            preparedStatement1.setInt(6,1200*daysBetween);
+                        }
+                        else if(room_type==3){
+                            preparedStatement1.setInt(6,1500*daysBetween);
+                        }
+                        else if(room_type==4){
+                            preparedStatement1.setInt(6,1800*daysBetween);
+                        }
+                        else if(room_type==5){
+                            preparedStatement1.setInt(6,2000*daysBetween);
+                        }
+                        
                         preparedStatement1.setInt(7,0);
                         roombooked=true;
                         
@@ -184,7 +204,20 @@ public class BookingController {
                                 preparedStatement2.setInt(3,room_type);
                                 preparedStatement2.setDate(4,start_date);
                                 preparedStatement2.setDate(5,end_date);
-                                preparedStatement2.setInt(6,amount);
+                                if(room_type==1){
+                                        preparedStatement1.setInt(6,750*daysBetween);
+                                    }else if(room_type==2){
+                                        preparedStatement1.setInt(6,1200*daysBetween);
+                                    }
+                                    else if(room_type==3){
+                                        preparedStatement1.setInt(6,1500*daysBetween);
+                                    }
+                                    else if(room_type==4){
+                                        preparedStatement1.setInt(6,1800*daysBetween);
+                                    }
+                                    else if(room_type==5){
+                                        preparedStatement1.setInt(6,2000*daysBetween);
+                                    }
                                 preparedStatement2.setInt(7,0);
                                 roombooked=true;
 
@@ -532,6 +565,7 @@ public class BookingController {
         
 
         // Create a SQL query to select bookings with bill_ids from the cancel request
+        if(i!=0){
         StringBuilder bookingQuery = new StringBuilder("SELECT * FROM bookings WHERE bill_id IN (");
         for (int j = 0; j < bill_s.length; j++) {
             if (j > 0) {
@@ -542,8 +576,11 @@ public class BookingController {
         bookingQuery.append(")");
 
         PreparedStatement bookingStatement = con.prepareStatement(bookingQuery.toString());
-        result = bookingStatement.executeQuery();
+       
+            result = bookingStatement.executeQuery();
+       
         System.out.println(bookingQuery.toString());
+        }
     } catch (SQLException ex) {
         // Handle exceptions
         ex.printStackTrace();

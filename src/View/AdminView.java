@@ -131,6 +131,8 @@ public class AdminView extends javax.swing.JFrame {
         
         
         try{
+            
+            if(cacnelunpaidBookingsModelResult_admin!=null){
             while (cacnelunpaidBookingsModelResult_admin.next()) {
                 int BillNo = cacnelunpaidBookingsModelResult_admin.getInt("bill_id");
                 int user =  cacnelunpaidBookingsModelResult_admin.getInt("user");
@@ -148,6 +150,7 @@ public class AdminView extends javax.swing.JFrame {
 
             // Close result set and prepared statement
             cacnelunpaidBookingsModelResult_admin.close();
+            }
        }catch(SQLException ex) {
             //model.addRow(new Object[]{null, null, "No data", null, null, null});
             // Handle exceptions
