@@ -17,11 +17,7 @@ import javax.swing.SwingUtilities;
  * @author gandh
  */
 public class HotelReservationSystem {
-    
-    
-    
-    
-
+        
     /**
      * @param args the command line arguments
      */

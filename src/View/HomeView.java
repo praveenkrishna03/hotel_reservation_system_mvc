@@ -1352,7 +1352,7 @@ public class HomeView extends javax.swing.JFrame {
         String end_s=(String) jComboBox20.getSelectedItem();
         
         
-        int room_type = (jComboBox21.getSelectedIndex()+1)+5;
+        int room_type = jComboBox21.getSelectedIndex()+5;
         int start_day = jComboBox15.getSelectedIndex()+1;
         int start_month = jComboBox16.getSelectedIndex()+1;
         int start_year = Integer.parseInt(start_s);
